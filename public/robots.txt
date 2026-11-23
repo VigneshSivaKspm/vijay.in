@@ -1,0 +1,5 @@
+# https://vijaykrishnan.in/robots.txt
+User-agent: *
+Allow: /
+
+Sitemap: https://vijaykrishnan.in/sitemap.xml

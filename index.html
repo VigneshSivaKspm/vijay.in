@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#08080B" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Route-specific SEO (title, description, canonical, Open Graph, Twitter, JSON-LD) is injected
+         here by vite-plugin-seo.ts from src/seo/site.ts, and kept in sync at runtime by useSeo(). -->
+    <!--seo:head-->
+
+    <meta name="author" content="S Vijay Krishnan" />
+    <meta name="application-name" content="S Vijay Krishnan" />
+    <meta name="apple-mobile-web-app-title" content="S Vijay Krishnan" />
+    <meta name="keywords" content="S Vijay Krishnan, Vijay Krishnan, S Vijay Krishnan director, Tamil film director, Tamil film producer, Indian filmmaker, Chennai film director, VK Productions, Tamil cinema" />
+    <meta name="geo.region" content="IN-TN" />
+    <meta name="geo.placename" content="Chennai" />
+
+    <!-- Icons & manifest -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/logo/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/logo/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/logo/android-chrome-192x192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/logo/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Global structured data: Person + Organization + WebSite (generated from src/seo/site.ts) -->
+    <!--seo:global-->
+
+    <!-- Fonts (non-render-blocking: swap in once loaded) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link
+      rel="preload"
+      as="style"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+      rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Manrope:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap"
+        rel="stylesheet"
+      />
+    </noscript>
+  </head>
+  <body>
+    <!-- Semantic static content (crawlable without JavaScript) lives inside #root and is
+         replaced by React on mount. -->
+    <div id="root"><!--seo:body--></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
