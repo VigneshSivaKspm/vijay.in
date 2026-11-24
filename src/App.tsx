@@ -18,13 +18,9 @@ import { shouldShowPreloader, markPreloaderShown } from './seo/preloaderPolicy';
 // Route-based code splitting
 const Home = lazy(() => import('./pages/Home'));
 const About = lazy(() => import('./pages/About'));
-const Filmography = lazy(() => import('./pages/Filmography'));
-const FilmDetail = lazy(() => import('./pages/FilmDetail'));
-const Production = lazy(() => import('./pages/Production'));
-const CreativeVision = lazy(() => import('./pages/CreativeVision'));
 const Gallery = lazy(() => import('./pages/Gallery'));
-const PressAwards = lazy(() => import('./pages/PressAwards'));
 const Contact = lazy(() => import('./pages/Contact'));
+const Privacy = lazy(() => import('./pages/Privacy'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 gsap.registerPlugin(ScrollTrigger);
@@ -63,13 +59,9 @@ function AppInner() {
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
-            <Route path="/filmography" element={<Filmography />} />
-            <Route path="/films/:slug" element={<FilmDetail />} />
-            <Route path="/production" element={<Production />} />
-            <Route path="/creative-vision" element={<CreativeVision />} />
             <Route path="/gallery" element={<Gallery />} />
-            <Route path="/press-awards" element={<PressAwards />} />
             <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

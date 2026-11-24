@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from '../../hooks/useInView';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import type { TimelinePhoto } from '../../data/timeline';
+import { photoMeta } from '../../utils/images';
+import Picture from './Picture';
 
 interface TimelineGalleryProps {
   photos: TimelinePhoto[];
@@ -91,13 +93,14 @@ const TimelineGallery: React.FC<TimelineGalleryProps> = ({
               className="absolute inset-0 transition-opacity duration-[1100ms] ease-in-out motion-reduce:transition-none"
               style={{ opacity: active ? 1 : 0 }}
             >
-              <img
+              <Picture
                 src={photo.src}
                 alt={photo.alt}
-                width={1000}
-                height={1250}
+                widths={photoMeta(photo.src).widths}
+                sizes="(min-width: 1024px) 480px, calc(100vw - 5rem)"
+                width={photoMeta(photo.src).width}
+                height={photoMeta(photo.src).height}
                 loading="lazy"
-                decoding="async"
                 draggable={false}
                 className={`h-full w-full object-cover object-[50%_18%] ${active ? 'tl-kenburns' : ''}`}
               />
@@ -183,11 +186,14 @@ const TimelineGallery: React.FC<TimelineGalleryProps> = ({
                 }`}
                 style={{ borderColor: active ? accent : 'rgba(245,240,232,0.12)' }}
               >
-                <img
+                <Picture
                   src={photo.src}
                   alt=""
+                  widths={[480]}
+                  sizes="96px"
+                  width={photoMeta(photo.src).width}
+                  height={photoMeta(photo.src).height}
                   loading="lazy"
-                  decoding="async"
                   draggable={false}
                   className="h-full w-full object-cover object-[50%_15%] transition-transform duration-700 group-hover:scale-110"
                 />

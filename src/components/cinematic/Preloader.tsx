@@ -90,7 +90,9 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         <div ref={monogramRef} className="opacity-0">
           <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border-2 border-gold/60 shadow-[0_0_50px_rgba(233,185,110,0.35)] bg-cinemaBlack">
             <img
-              src="/logo/android-chrome-512x512.png"
+              src="/logo/vk-224.webp"
+                width={224}
+                height={224}
               alt="Vijay Krishnan Logo"
               className="w-full h-full object-cover"
             />

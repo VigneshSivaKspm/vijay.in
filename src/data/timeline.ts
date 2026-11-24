@@ -40,8 +40,8 @@ export const timeline: TimelineEntry[] = [
     title: ['Co-Producer', 'Chairman'],
     subtitle: 'Film Co-Producer & Chairman',
     description:
-      'Two years of backing stories from both sides of the table — producing on the sets and steering the company as Chairman.',
-    tags: ['Film Production', 'Co-Producer', 'Chairman'],
+      'Worked in film as a co-producer and chairman from 2021 to 2023.',
+    tags: ['Film', 'Co-Producer', 'Chairman'],
     icon: 'film',
     accent: '#FF304F',
     photos: [
@@ -64,8 +64,8 @@ export const timeline: TimelineEntry[] = [
     subtitle: 'Chief Executive Officer',
     organisation: 'Youpeak Tech',
     description:
-      'Leading Youpeak Tech as Chief Executive Officer — setting the vision, building the team and driving the company forward.',
-    tags: ['Youpeak Tech', 'Leadership', 'Vision'],
+      'Chief Executive Officer of Youpeak Tech since 2023.',
+    tags: ['Youpeak Tech', 'CEO'],
     icon: 'briefcase',
     accent: '#E9B96E',
     photos: [
@@ -83,7 +83,7 @@ export const timeline: TimelineEntry[] = [
     title: ['Launching', 'New Movie'],
     subtitle: 'The next chapter',
     description:
-      'The camera rolls again. A brand-new movie launches in 2027 — and the story is only just beginning.',
+      'A new movie launches in 2027. More details to come.',
     tags: ['New Movie', '2027', 'Stay Tuned'],
     icon: 'clapperboard',
     accent: '#8B5CF6',

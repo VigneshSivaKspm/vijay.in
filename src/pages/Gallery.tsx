@@ -1,16 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { X, ChevronLeft, ChevronRight, MapPin, Calendar } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { gallery, type GalleryItem } from '../data/gallery';
+import { photoMeta } from '../utils/images';
+import Picture from '../components/ui/Picture';
 
-type GalleryCategory = 'all' | 'on-set' | 'behind-the-scenes' | 'film-stills' | 'portraits' | 'events';
+type GalleryCategory = 'all' | GalleryItem['category'];
 
 const categories: { label: string; value: GalleryCategory }[] = [
-  { label: 'ALL FRAMES', value: 'all' },
-  { label: 'ON SET', value: 'on-set' },
-  { label: 'BEHIND THE SCENES', value: 'behind-the-scenes' },
-  { label: 'FILM STILLS', value: 'film-stills' },
-  { label: 'PORTRAITS', value: 'portraits' },
-  { label: 'EVENTS', value: 'events' },
+  { label: 'ALL PHOTOS', value: 'all' },
+  { label: 'CEO', value: 'ceo' },
+  { label: 'CHAIRMAN', value: 'chairman' },
+  { label: 'PRODUCER', value: 'producer' },
 ];
 
 const Gallery: React.FC = () => {
@@ -69,32 +69,34 @@ const Gallery: React.FC = () => {
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-teal/50 shadow-[0_0_12px_rgba(45,212,191,0.25)] shrink-0">
               <img
-                src="/logo/apple-touch-icon.png"
+                src="/logo/vk-224.webp"
+                width={224}
+                height={224}
                 alt="Vijay Krishnan"
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="flex items-center gap-2">
               <span className="w-6 h-px bg-teal" />
-              <p className="eyebrow text-teal">Visual Archive</p>
+              <p className="eyebrow text-teal">Photo Gallery</p>
             </div>
           </div>
 
           <h1 className="font-display text-[64px] sm:text-[90px] md:text-[130px] lg:text-[160px] leading-[0.88] text-ivory tracking-tight mb-8">
-            FRAMES IN<br />
+            THE CAREER<br />
             <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(45,212,191,0.8)' }}>
-              RETROSPECT.
+              IN FRAMES.
             </span>
           </h1>
 
           <div className="flex flex-wrap items-center justify-between gap-6 border-t border-ivory/10 pt-8">
             <p className="body-text text-lg max-w-xl text-ivory/90">
-              A curated photographic chronicle documenting the tactile reality of cinema: 4 AM call times, Nilgiri rain squalls, color suite grading sessions, and festival premieres.
+              Photographs of S Vijay Krishnan across the chapters of his career — producer, chairman and CEO.
             </p>
             <div className="flex items-center gap-6">
               <div>
                 <span className="font-display text-3xl text-teal">{gallery.length}</span>
-                <span className="font-body text-xs text-silver block uppercase tracking-wider">Archived Stills</span>
+                <span className="font-body text-xs text-silver block uppercase tracking-wider">Photos</span>
               </div>
             </div>
           </div>
@@ -145,15 +147,15 @@ const Gallery: React.FC = () => {
                   className={`group relative overflow-hidden bg-cinemaBlack border border-ivory/10 cursor-pointer hover:border-ivory/40 transition-all duration-500 ${aspectClass}`}
                   data-cursor="EXPLORE"
                 >
-                  <img
+                  <Picture
                     src={item.src}
                     alt={item.caption}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80';
-                    }}
+                    widths={photoMeta(item.src).widths}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                    width={photoMeta(item.src).width}
+                    height={photoMeta(item.src).height}
+                    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                    loading={index < 3 ? 'eager' : 'lazy'}
                   />
 
                   {/* Gradient overlay */}
@@ -165,16 +167,9 @@ const Gallery: React.FC = () => {
                     </div>
 
                     <div>
-                      {item.project && (
-                        <p className="eyebrow text-gold text-[10px] mb-1">{item.project}</p>
-                      )}
                       <h4 className="font-display text-xl text-ivory tracking-wide mb-1">
                         {item.caption}
                       </h4>
-                      <div className="flex items-center gap-4 text-[11px] text-silver/80 font-body">
-                        {item.location && <span>{item.location}</span>}
-                        <span>{item.year}</span>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -217,7 +212,7 @@ const Gallery: React.FC = () => {
           <button
             onClick={handlePrev}
             className="absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 z-20 p-3 bg-graphite/80 border border-ivory/10 text-silver hover:text-ivory transition-colors"
-            aria-label="Previous Frame"
+            aria-label="Previous photo"
           >
             <ChevronLeft size={24} />
           </button>
@@ -225,37 +220,28 @@ const Gallery: React.FC = () => {
           <button
             onClick={handleNext}
             className="absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 z-20 p-3 bg-graphite/80 border border-ivory/10 text-silver hover:text-ivory transition-colors"
-            aria-label="Next Frame"
+            aria-label="Next photo"
           >
             <ChevronRight size={24} />
           </button>
 
           {/* Image & Caption Stage */}
           <div className="relative max-w-5xl w-full flex flex-col items-center max-h-[85vh]">
-            <img
+            <Picture
               src={activeItem.src}
               alt={activeItem.caption}
+              widths={photoMeta(activeItem.src).widths}
+              sizes="(min-width: 1024px) 60vh, 90vw"
+              width={photoMeta(activeItem.src).width}
+              height={photoMeta(activeItem.src).height}
               className="w-auto h-auto max-h-[70vh] max-w-full object-contain border border-ivory/20 shadow-2xl"
             />
 
             {/* Caption Card */}
             <div className="mt-4 p-4 bg-graphite/90 border border-ivory/10 text-center max-w-2xl w-full">
-              {activeItem.project && (
-                <p className="eyebrow text-gold text-xs mb-1">{activeItem.project}</p>
-              )}
-              <h3 className="font-display text-xl text-ivory tracking-wide mb-1">
+              <h3 className="font-display text-xl text-ivory tracking-wide">
                 {activeItem.caption}
               </h3>
-              <div className="flex items-center justify-center gap-4 text-xs font-body text-silver/70">
-                {activeItem.location && (
-                  <span className="flex items-center gap-1">
-                    <MapPin size={12} className="text-teal" /> {activeItem.location}
-                  </span>
-                )}
-                <span className="flex items-center gap-1">
-                  <Calendar size={12} className="text-teal" /> {activeItem.year}
-                </span>
-              </div>
             </div>
           </div>
         </div>

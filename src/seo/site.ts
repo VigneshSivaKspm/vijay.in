@@ -7,30 +7,27 @@
  * Both therefore always agree.
  */
 import { getEnv } from '../config/env';
-import { films, type Film } from '../data/films';
-import { filmmaker } from '../data/filmmaker';
-import { awards } from '../data/awards';
-import { press } from '../data/press';
-import { gallery } from '../data/gallery';
+import { filmmaker, socialUrls } from '../data/filmmaker';
+import { timeline } from '../data/timeline';
 
 // ─── Site constants ──────────────────────────────────────────────────────────
 export const SITE = {
   url: getEnv('VITE_SITE_URL', 'https://vijaykrishnan.in').replace(/\/+$/, ''),
   name: 'S Vijay Krishnan',
-  title: 'S Vijay Krishnan — Tamil Film Director & Producer',
-  company: 'VK Productions',
+  title: 'S Vijay Krishnan — CEO of Youpeak Tech & Film Producer',
+  company: 'Youpeak Tech',
   lang: 'en-IN',
   locale: 'en_IN',
   themeColor: '#08080B',
   ogImage: '/og-image.jpg',
   ogImageWidth: 1200,
   ogImageHeight: 630,
-  ogImageAlt: 'S Vijay Krishnan — Tamil film director and producer, Chennai',
+  ogImageAlt: 'S Vijay Krishnan — CEO of Youpeak Tech and film producer',
   /**
    * Bump when site content meaningfully changes. Used as <lastmod> in sitemap.xml.
    * (Google ignores lastmod when it is always "today", so keep this honest.)
    */
-  lastModified: '2026-11-18',
+  lastModified: '2026-11-24',
 } as const;
 
 export const abs = (path: string): string => {
@@ -43,36 +40,6 @@ const ID = {
   person: `${SITE.url}/#person`,
   website: `${SITE.url}/#website`,
   org: `${SITE.url}/#organization`,
-};
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-const titleCase = (s: string) =>
-  s.toLowerCase().replace(/(^|\s)(\S)/g, (_, a: string, b: string) => a + b.toUpperCase());
-
-export const filmTitle = (f: Film) => titleCase(f.title);
-
-const clip = (s: string, max = 158): string => {
-  const t = s.replace(/\s+/g, ' ').trim();
-  if (t.length <= max) return t;
-  const cut = t.slice(0, max - 1);
-  return `${cut.slice(0, cut.lastIndexOf(' ')).replace(/[,;:\s-]+$/, '')}…`;
-};
-
-/** Unsplash images accept size params; ask for the 1.91:1 OG ratio. */
-const ogSized = (url: string) =>
-  url.includes('images.unsplash.com')
-    ? url.replace(/w=\d+/, 'w=1200').replace(/&q=\d+/, '&h=630&q=80')
-    : url;
-
-const isoDuration = (runtime: string): string | undefined => {
-  const m = runtime.match(/(\d+)\s*min/i);
-  return m ? `PT${m[1]}M` : undefined;
-};
-
-const typeLabel: Record<Film['type'], string> = {
-  feature: 'Feature Film',
-  short: 'Short Film',
-  commercial: 'Commercial',
 };
 
 // ─── Route model ─────────────────────────────────────────────────────────────
@@ -105,117 +72,32 @@ const home: Crumb = { name: 'Home', path: '/' };
 
 const ownerRef = { '@id': ID.person };
 
-const filmNode = (f: Film): Record<string, unknown> => {
-  const url = abs(`/films/${f.slug}`);
-  const directedByOwner = f.credits.director === titleCase(filmmaker.name);
-  const node: Record<string, unknown> = {
-    '@type': 'Movie',
-    '@id': `${url}#movie`,
-    url,
-    name: filmTitle(f),
-    description: f.synopsis,
-    slogan: f.tagline,
-    inLanguage: f.language === 'Tamil' ? 'ta' : f.language,
-    genre: f.genre,
-    image: ogSized(f.backdrop),
-    thumbnailUrl: f.poster,
-    countryOfOrigin: { '@type': 'Country', name: 'India' },
-    productionCompany: { '@id': ID.org },
-    director: f.credits.director
-      ? directedByOwner
-        ? ownerRef
-        : { '@type': 'Person', name: f.credits.director }
-      : undefined,
-    producer: f.role.includes('Producer') ? ownerRef : undefined,
-    actor: f.cast.map((c) => ({ '@type': 'Person', name: c.actor.replace(/\s*\(.*\)$/, '') })),
-    musicBy: f.credits.music ? { '@type': 'Person', name: f.credits.music.replace(/^Original Score by /, '') } : undefined,
-    award: f.awards.filter((a) => /^(Winner|Grand Jury|Special Jury)/i.test(a) && !/proposed/i.test(a)),
-    datePublished: f.status === 'released' ? f.year : undefined,
-    dateCreated: f.year,
-    duration: isoDuration(f.runtime),
-  };
-  Object.keys(node).forEach((k) => node[k] === undefined && delete node[k]);
-  return node;
-};
+const page = (
+  path: string,
+  type: string,
+  name: string,
+  extra: Record<string, unknown> = {},
+): Record<string, unknown> => ({
+  '@type': type,
+  '@id': `${abs(path)}#webpage`,
+  url: abs(path),
+  name,
+  isPartOf: { '@id': ID.website },
+  inLanguage: SITE.lang,
+  ...extra,
+});
 
-const filmRoute = (f: Film): RouteSeo => {
-  const name = filmTitle(f);
-  const path = `/films/${f.slug}`;
-  const verb = f.role.includes('Director') ? 'Directed' : 'Produced';
-  return {
-    path,
-    title: `${name} (${f.year}) — ${f.language} ${typeLabel[f.type]} | ${SITE.name}`,
-    description: (() => {
-      const lead = `${name} (${f.year}), a ${f.language} ${typeLabel[f.type].toLowerCase()} ${verb.toLowerCase()} by ${SITE.name}. ${f.tagline}`;
-      const full = `${lead} ${f.synopsis}`;
-      // Prefer the richer synopsis when it fits a search snippet; otherwise stop on the tagline.
-      return full.length <= 160 ? full : clip(lead);
-    })(),
-    heading: name,
-    ogType: 'video.movie',
-    image: ogSized(f.backdrop),
-    imageAlt: `${name} — ${f.tagline}`,
-    changefreq: 'monthly',
-    priority: f.featured ? 0.8 : 0.7,
-    breadcrumbs: [home, { name: 'Filmography', path: '/filmography' }, { name, path }],
-    schema: [
-      {
-        '@type': 'WebPage',
-        '@id': `${abs(path)}#webpage`,
-        url: abs(path),
-        name: `${name} (${f.year})`,
-        isPartOf: { '@id': ID.website },
-        mainEntity: { '@id': `${abs(path)}#movie` },
-        inLanguage: SITE.lang,
-      },
-      filmNode(f),
-    ],
-    body: {
-      paragraphs: [f.tagline, f.synopsis, `Director's note: ${f.directorNote}`],
-      list: [
-        {
-          title: 'Details',
-          items: [
-            { text: `Year: ${f.year}` },
-            { text: `Language: ${f.language}` },
-            { text: `Genre: ${f.genre.join(', ')}` },
-            { text: `Runtime: ${f.runtime}` },
-            { text: `Status: ${f.status}` },
-          ],
-        },
-        {
-          title: 'Cast',
-          items: f.cast.map((c) => ({ text: `${c.actor} as ${c.character}` })),
-        },
-        {
-          title: 'Credits',
-          items: Object.entries(f.credits).map(([k, v]) => ({
-            text: `${k.replace(/([A-Z])/g, ' $1').replace(/^./, (c) => c.toUpperCase())}: ${v}`,
-          })),
-        },
-        { title: 'Awards & Festivals', items: f.awards.map((a) => ({ text: a })) },
-      ],
-    },
-  };
-};
-
-const filmographyItemList = {
-  '@type': 'ItemList',
-  itemListElement: films.map((f, i) => ({
-    '@type': 'ListItem',
-    position: i + 1,
-    url: abs(`/films/${f.slug}`),
-    name: filmTitle(f),
-  })),
-};
+const timelineList = timeline.map((t) => ({
+  text: `${t.period}: ${t.subtitle}${t.organisation ? `, ${t.organisation}` : ''}`,
+}));
 
 export const ROUTES: RouteSeo[] = [
   {
     path: '/',
-    title: 'S Vijay Krishnan — Tamil Film Director & Producer | Chennai',
+    title: 'S Vijay Krishnan — CEO of Youpeak Tech & Film Producer',
     description:
-      'Official website of S Vijay Krishnan, award-winning Tamil film director and producer from Chennai. Explore his films, awards, gallery and VK Productions.',
-    heading: 'S Vijay Krishnan — Tamil Film Director & Producer',
+      'Official website of S Vijay Krishnan, CEO of Youpeak Tech and film producer. His journey from film co-producer and chairman to CEO, and his new movie launching in 2027.',
+    heading: 'S Vijay Krishnan — CEO of Youpeak Tech & Film Producer',
     ogType: 'website',
     image: SITE.ogImage,
     imageAlt: SITE.ogImageAlt,
@@ -223,36 +105,21 @@ export const ROUTES: RouteSeo[] = [
     priority: 1.0,
     breadcrumbs: [home],
     schema: [
-      {
-        '@type': 'WebPage',
-        '@id': `${abs('/')}#webpage`,
-        url: abs('/'),
-        name: 'S Vijay Krishnan — Tamil Film Director & Producer',
-        isPartOf: { '@id': ID.website },
+      page('/', 'WebPage', 'S Vijay Krishnan — CEO of Youpeak Tech & Film Producer', {
         about: ownerRef,
         primaryImageOfPage: { '@type': 'ImageObject', url: abs(SITE.ogImage) },
-        inLanguage: SITE.lang,
-      },
+      }),
     ],
     body: {
-      paragraphs: [filmmaker.tagline, filmmaker.bio, filmmaker.philosophy],
-      list: [
-        {
-          title: 'Films',
-          items: films.map((f) => ({ text: `${filmTitle(f)} (${f.year}) — ${f.tagline}`, href: `/films/${f.slug}` })),
-        },
-        {
-          title: 'Highlights',
-          items: filmmaker.stats.map((s) => ({ text: `${s.number} ${s.label}` })),
-        },
-      ],
+      paragraphs: [filmmaker.tagline, filmmaker.bio],
+      list: [{ title: 'Journey', items: timelineList }],
     },
   },
   {
     path: '/about',
-    title: 'About S Vijay Krishnan — Indian Film Director & Producer',
+    title: 'About S Vijay Krishnan — CEO of Youpeak Tech',
     description:
-      'Meet S Vijay Krishnan: Chennai-based Tamil film director and producer with 12+ years in Indian cinema. His journey, directing philosophy and creative process.',
+      'About S Vijay Krishnan: CEO of Youpeak Tech since 2023, film co-producer and chairman from 2021 to 2023, and launching a new movie in 2027.',
     heading: 'About S Vijay Krishnan',
     ogType: 'profile',
     image: SITE.ogImage,
@@ -260,184 +127,31 @@ export const ROUTES: RouteSeo[] = [
     changefreq: 'monthly',
     priority: 0.9,
     breadcrumbs: [home, { name: 'About', path: '/about' }],
-    schema: [
-      {
-        '@type': 'ProfilePage',
-        '@id': `${abs('/about')}#webpage`,
-        url: abs('/about'),
-        name: 'About S Vijay Krishnan',
-        isPartOf: { '@id': ID.website },
-        mainEntity: ownerRef,
-        dateModified: SITE.lastModified,
-        inLanguage: SITE.lang,
-      },
-    ],
+    schema: [page('/about', 'ProfilePage', 'About S Vijay Krishnan', { mainEntity: ownerRef, dateModified: SITE.lastModified })],
     body: {
-      paragraphs: [filmmaker.bio, filmmaker.bioExtended],
-      list: [
-        {
-          title: 'Awards',
-          items: filmmaker.awards.map((a) => ({ text: `${a.title} — ${a.festival} (${a.year}), ${a.project}` })),
-        },
-      ],
+      paragraphs: [filmmaker.bio],
+      list: [{ title: 'Career timeline', items: timelineList }],
     },
-  },
-  {
-    path: '/filmography',
-    title: 'Filmography — Films by S Vijay Krishnan | Tamil Cinema',
-    description:
-      'Complete filmography of S Vijay Krishnan: Nilavil Ondru, Kaadu Kuyil, Ratchagan Rises, Mazhai, Vaanam Thiranthu and Nila Kavithai. Tamil features and shorts.',
-    heading: 'Filmography of S Vijay Krishnan',
-    ogType: 'website',
-    image: SITE.ogImage,
-    imageAlt: SITE.ogImageAlt,
-    changefreq: 'weekly',
-    priority: 0.9,
-    breadcrumbs: [home, { name: 'Filmography', path: '/filmography' }],
-    schema: [
-      {
-        '@type': 'CollectionPage',
-        '@id': `${abs('/filmography')}#webpage`,
-        url: abs('/filmography'),
-        name: 'Filmography — Films by S Vijay Krishnan',
-        isPartOf: { '@id': ID.website },
-        about: ownerRef,
-        mainEntity: filmographyItemList,
-        inLanguage: SITE.lang,
-      },
-    ],
-    body: {
-      paragraphs: ['Feature films and short films directed and produced by S Vijay Krishnan.'],
-      list: [
-        {
-          title: 'Films',
-          items: films.map((f) => ({
-            text: `${filmTitle(f)} (${f.year}) — ${f.genre.join(', ')}. ${f.synopsis}`,
-            href: `/films/${f.slug}`,
-          })),
-        },
-      ],
-    },
-  },
-  {
-    path: '/production',
-    title: 'Film Production Services — VK Productions, Chennai',
-    description:
-      'VK Productions, the independent banner of S Vijay Krishnan: creative development, line production, post-production and OTT distribution for Indian cinema.',
-    heading: 'VK Productions — Film Production Services',
-    ogType: 'website',
-    image: SITE.ogImage,
-    imageAlt: SITE.ogImageAlt,
-    changefreq: 'monthly',
-    priority: 0.8,
-    breadcrumbs: [home, { name: 'Production', path: '/production' }],
-    schema: [
-      {
-        '@type': 'WebPage',
-        '@id': `${abs('/production')}#webpage`,
-        url: abs('/production'),
-        name: 'Film Production Services — VK Productions',
-        isPartOf: { '@id': ID.website },
-        about: { '@id': ID.org },
-        inLanguage: SITE.lang,
-      },
-    ],
-    body: {
-      paragraphs: [
-        'VK Productions is a modern independent production banner committed to cinematic ambition, fiscal integrity and auteur storytelling, founded by S Vijay Krishnan in Chennai.',
-        'Services: creative development, on-set direction, line production, post-production and OTT distribution for Indian and international films.',
-      ],
-    },
-  },
-  {
-    path: '/creative-vision',
-    title: 'Creative Vision & Filmmaking Philosophy | S Vijay Krishnan',
-    description:
-      "The artistic manifesto, visual principles and director's notebook of Tamil filmmaker S Vijay Krishnan: how light, sound and silence shape his cinema.",
-    heading: 'Creative Vision & Filmmaking Philosophy',
-    ogType: 'website',
-    image: SITE.ogImage,
-    imageAlt: SITE.ogImageAlt,
-    changefreq: 'monthly',
-    priority: 0.7,
-    breadcrumbs: [home, { name: 'Creative Vision', path: '/creative-vision' }],
-    schema: [
-      {
-        '@type': 'WebPage',
-        '@id': `${abs('/creative-vision')}#webpage`,
-        url: abs('/creative-vision'),
-        name: 'Creative Vision & Filmmaking Philosophy',
-        isPartOf: { '@id': ID.website },
-        about: ownerRef,
-        inLanguage: SITE.lang,
-      },
-    ],
-    body: { paragraphs: [filmmaker.philosophy, "The artistic manifesto, visual principles and director's notebook of S Vijay Krishnan."] },
   },
   {
     path: '/gallery',
-    title: 'Gallery — On-Set Photos & Film Stills | S Vijay Krishnan',
-    description:
-      'Behind-the-scenes photography, on-set frames, film stills and festival moments from the films of Tamil director S Vijay Krishnan.',
-    heading: 'Visual Archive & Gallery',
+    title: 'Gallery — Photos of S Vijay Krishnan',
+    description: 'Photos of S Vijay Krishnan as CEO of Youpeak Tech, film chairman and producer.',
+    heading: 'Photo Gallery',
     ogType: 'website',
     image: SITE.ogImage,
     imageAlt: SITE.ogImageAlt,
-    changefreq: 'weekly',
-    priority: 0.7,
+    changefreq: 'monthly',
+    priority: 0.6,
     breadcrumbs: [home, { name: 'Gallery', path: '/gallery' }],
-    schema: [
-      {
-        '@type': 'ImageGallery',
-        '@id': `${abs('/gallery')}#webpage`,
-        url: abs('/gallery'),
-        name: 'Visual Archive & Gallery — S Vijay Krishnan',
-        isPartOf: { '@id': ID.website },
-        about: ownerRef,
-        inLanguage: SITE.lang,
-      },
-    ],
-    body: {
-      paragraphs: ['Behind-the-scenes photography, on-set frames, film stills and festival moments.'],
-      list: [{ title: 'Frames', items: gallery.map((g) => ({ text: `${g.caption}${g.project ? ` — ${g.project}` : ''} (${g.year})` })) }],
-    },
-  },
-  {
-    path: '/press-awards',
-    title: 'Press & Awards — Festival Laurels | S Vijay Krishnan',
-    description:
-      'Festival laurels, jury awards and press coverage for Tamil director S Vijay Krishnan, including Best Director at Chennai International Film Festival.',
-    heading: 'Press & Awards',
-    ogType: 'website',
-    image: SITE.ogImage,
-    imageAlt: SITE.ogImageAlt,
-    changefreq: 'weekly',
-    priority: 0.7,
-    breadcrumbs: [home, { name: 'Press & Awards', path: '/press-awards' }],
-    schema: [
-      {
-        '@type': 'CollectionPage',
-        '@id': `${abs('/press-awards')}#webpage`,
-        url: abs('/press-awards'),
-        name: 'Press & Awards — S Vijay Krishnan',
-        isPartOf: { '@id': ID.website },
-        about: ownerRef,
-        inLanguage: SITE.lang,
-      },
-    ],
-    body: {
-      paragraphs: ['Official festival laurels, awards and critical press for director and producer S Vijay Krishnan.'],
-      list: [
-        { title: 'Awards', items: awards.map((a) => ({ text: `${a.title} — ${a.festival} (${a.year}), ${a.project}${a.type === 'nomination' ? ' [nomination]' : ''}` })) },
-        { title: 'Press', items: press.map((p) => ({ text: p.headline })) },
-      ],
-    },
+    schema: [page('/gallery', 'ImageGallery', 'Photo Gallery — S Vijay Krishnan', { about: ownerRef })],
+    body: { paragraphs: ['Photographs of S Vijay Krishnan across his career as producer, chairman and CEO.'] },
   },
   {
     path: '/contact',
-    title: 'Contact S Vijay Krishnan — Film Direction & Production',
+    title: 'Contact S Vijay Krishnan',
     description:
-      'Contact S Vijay Krishnan and VK Productions in Chennai, Tamil Nadu for film direction, production partnerships, press and collaboration enquiries.',
+      'Get in touch with S Vijay Krishnan, CEO of Youpeak Tech and film producer, for partnerships, press and enquiries.',
     heading: 'Contact S Vijay Krishnan',
     ogType: 'website',
     image: SITE.ogImage,
@@ -445,29 +159,18 @@ export const ROUTES: RouteSeo[] = [
     changefreq: 'monthly',
     priority: 0.8,
     breadcrumbs: [home, { name: 'Contact', path: '/contact' }],
-    schema: [
-      {
-        '@type': 'ContactPage',
-        '@id': `${abs('/contact')}#webpage`,
-        url: abs('/contact'),
-        name: 'Contact S Vijay Krishnan',
-        isPartOf: { '@id': ID.website },
-        about: ownerRef,
-        inLanguage: SITE.lang,
-      },
-    ],
+    schema: [page('/contact', 'ContactPage', 'Contact S Vijay Krishnan', { about: ownerRef })],
     body: {
-      paragraphs: [`Studio: ${filmmaker.location}.`, `Email: ${filmmaker.email}`],
+      paragraphs: [`Based in ${filmmaker.location}.`, `Email: ${filmmaker.email}`],
     },
   },
-  ...films.map(filmRoute),
 ];
 
 /** Served with HTTP 404 by the host; must never be indexed. */
 export const NOT_FOUND_ROUTE: RouteSeo = {
   path: '/404',
   title: 'Page Not Found | S Vijay Krishnan',
-  description: 'The page you are looking for does not exist. Return to the official website of Tamil film director S Vijay Krishnan.',
+  description: 'The page you are looking for does not exist. Return to the official website of S Vijay Krishnan.',
   heading: 'Page Not Found',
   ogType: 'website',
   image: SITE.ogImage,
@@ -477,7 +180,10 @@ export const NOT_FOUND_ROUTE: RouteSeo = {
   noindex: true,
   breadcrumbs: [],
   schema: [],
-  body: { paragraphs: ['The page you are looking for does not exist.'], list: [{ title: 'Explore', items: [{ text: 'Home', href: '/' }, { text: 'Filmography', href: '/filmography' }, { text: 'Contact', href: '/contact' }] }] },
+  body: {
+    paragraphs: ['The page you are looking for does not exist.'],
+    list: [{ title: 'Explore', items: [{ text: 'Home', href: '/' }, { text: 'About', href: '/about' }, { text: 'Contact', href: '/contact' }] }],
+  },
 };
 
 export const getRoute = (pathname: string): RouteSeo | undefined => {
@@ -486,52 +192,46 @@ export const getRoute = (pathname: string): RouteSeo | undefined => {
 };
 
 // ─── Global JSON-LD graph (Person + Organization + WebSite) ──────────────────
-export const globalGraph = (): Record<string, unknown> => ({
-  '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'Person',
-      '@id': ID.person,
-      name: SITE.name,
-      url: abs('/'),
-      description: filmmaker.bio,
-      jobTitle: ['Film Director', 'Film Producer'],
-      nationality: { '@type': 'Country', name: 'India' },
-      homeLocation: {
-        '@type': 'Place',
-        address: { '@type': 'PostalAddress', addressLocality: 'Chennai', addressRegion: 'Tamil Nadu', addressCountry: 'IN' },
+export const globalGraph = (): Record<string, unknown> => {
+  const sameAs = socialUrls();
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Person',
+        '@id': ID.person,
+        name: SITE.name,
+        url: abs('/'),
+        description: filmmaker.bio,
+        jobTitle: filmmaker.jobTitle,
+        nationality: { '@type': 'Country', name: 'India' },
+        homeLocation: {
+          '@type': 'Place',
+          address: { '@type': 'PostalAddress', addressLocality: 'Chennai', addressRegion: 'Tamil Nadu', addressCountry: 'IN' },
+        },
+        worksFor: { '@id': ID.org },
+        ...(sameAs.length ? { sameAs } : {}),
+        mainEntityOfPage: abs('/about'),
       },
-      knowsAbout: ['Tamil cinema', 'Indian cinema', 'Film direction', 'Film production', 'Screenwriting', 'Cinematography'],
-      knowsLanguage: ['ta', 'en'],
-      worksFor: { '@id': ID.org },
-      award: filmmaker.awards.map((a) => `${a.title} — ${a.festival} (${a.year})`),
-      sameAs: Object.values(filmmaker.social),
-      mainEntityOfPage: abs('/about'),
-    },
-    {
-      '@type': 'Organization',
-      '@id': ID.org,
-      name: SITE.company,
-      alternateName: 'VK Films',
-      url: abs('/production'),
-      logo: { '@type': 'ImageObject', url: abs('/icon-512.png'), width: 512, height: 512 },
-      founder: ownerRef,
-      areaServed: 'IN',
-      address: { '@type': 'PostalAddress', addressLocality: 'Chennai', addressRegion: 'Tamil Nadu', addressCountry: 'IN' },
-      sameAs: Object.values(filmmaker.social),
-    },
-    {
-      '@type': 'WebSite',
-      '@id': ID.website,
-      url: abs('/'),
-      name: SITE.name,
-      alternateName: ['S Vijay Krishnan Films', 'Vijay Krishnan Films', 'vijaykrishnan.in'],
-      description: 'Official website of S Vijay Krishnan, Tamil film director and producer.',
-      inLanguage: SITE.lang,
-      publisher: ownerRef,
-    },
-  ],
-});
+      {
+        '@type': 'Organization',
+        '@id': ID.org,
+        name: SITE.company,
+        member: ownerRef,
+      },
+      {
+        '@type': 'WebSite',
+        '@id': ID.website,
+        url: abs('/'),
+        name: SITE.name,
+        alternateName: ['vijaykrishnan.in'],
+        description: 'Official website of S Vijay Krishnan, CEO of Youpeak Tech and film producer.',
+        inLanguage: SITE.lang,
+        publisher: ownerRef,
+      },
+    ],
+  };
+};
 
 // ─── Head model ──────────────────────────────────────────────────────────────
 export interface HeadTag {

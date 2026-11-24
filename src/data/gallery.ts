@@ -1,133 +1,25 @@
+/** Real photographs only. Files live in public/producer, public/chairman and public/ceo. */
 export interface GalleryItem {
   id: string;
   src: string;
-  category: 'on-set' | 'behind-the-scenes' | 'film-stills' | 'portraits' | 'events';
+  category: 'producer' | 'chairman' | 'ceo';
   caption: string;
-  project?: string;
-  location?: string;
-  year: string;
   aspectRatio: 'square' | 'portrait' | 'landscape' | 'wide';
 }
 
+const NAME = 'S Vijay Krishnan';
+
 export const gallery: GalleryItem[] = [
-  {
-    id: 'g1',
-    src: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80',
-    category: 'film-stills',
-    caption: 'Nocturnal courtyard sequence framing the temple corridor',
-    project: 'Nilavil Ondru',
-    location: 'Madurai, Tamil Nadu',
-    year: '2023',
-    aspectRatio: 'landscape',
-  },
-  {
-    id: 'g2',
-    src: 'https://images.unsplash.com/photo-1512790182412-b19e6d62bc39?auto=format&fit=crop&w=1200&q=80',
-    category: 'on-set',
-    caption: 'Setting the 35mm anamorphic rig in dense Nilgiri fog',
-    project: 'Kaadu Kuyil',
-    location: 'Western Ghats',
-    year: '2022',
-    aspectRatio: 'portrait',
-  },
-  {
-    id: 'g3',
-    src: 'https://images.unsplash.com/photo-1478720568477-152d9b164e26?auto=format&fit=crop&w=1200&q=80',
-    category: 'behind-the-scenes',
-    caption: 'Director S Vijay Krishnan choreographing the climatic dock sequence',
-    project: 'Ratchagan Rises',
-    location: 'Thoothukudi Port',
-    year: '2021',
-    aspectRatio: 'landscape',
-  },
-  {
-    id: 'g4',
-    src: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1200&q=80',
-    category: 'events',
-    caption: 'Post-screening standing ovation at MAMI Mumbai Film Festival',
-    project: 'Nilavil Ondru Premiere',
-    location: 'Mumbai',
-    year: '2023',
-    aspectRatio: 'wide',
-  },
-  {
-    id: 'g5',
-    src: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=1200&q=80',
-    category: 'film-stills',
-    caption: 'Natural sun-flare study over barren Ramanathapuram soil',
-    project: 'Mazhai',
-    location: 'Ramanathapuram',
-    year: '2020',
-    aspectRatio: 'portrait',
-  },
-  {
-    id: 'g6',
-    src: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1200&q=80',
-    category: 'portraits',
-    caption: 'S Vijay Krishnan on the sound mixing stage with Dolby Atmos team',
-    project: 'Studio Portrait',
-    location: 'Chennai Studio',
-    year: '2024',
-    aspectRatio: 'square',
-  },
-  {
-    id: 'g7',
-    src: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1200&q=80',
-    category: 'on-set',
-    caption: 'Period lighting setup using warm tungsten lanterns across three riverbanks',
-    project: 'Vaanam Thiranthu',
-    location: 'Tirunelveli',
-    year: '2023',
-    aspectRatio: 'wide',
-  },
-  {
-    id: 'g8',
-    src: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=1200&q=80',
-    category: 'behind-the-scenes',
-    caption: 'Color grade inspection at Baselight suite with chief colorist',
-    project: 'Nila Kavithai',
-    location: 'Prasad Film Labs, Chennai',
-    year: '2024',
-    aspectRatio: 'landscape',
-  },
-  {
-    id: 'g9',
-    src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=1200&q=80',
-    category: 'portraits',
-    caption: 'Editorial profile photograph for Film Companion feature',
-    project: 'Filmmaker Profile',
-    location: 'Chennai',
-    year: '2023',
-    aspectRatio: 'portrait',
-  },
-  {
-    id: 'g10',
-    src: 'https://images.unsplash.com/photo-1500485035595-cbe6f645feb1?auto=format&fit=crop&w=1200&q=80',
-    category: 'film-stills',
-    caption: 'Monsoon clouds gathering over the Western Ghats horizon',
-    project: 'Kaadu Kuyil',
-    location: 'Ooty Pass',
-    year: '2022',
-    aspectRatio: 'landscape',
-  },
-  {
-    id: 'g11',
-    src: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1200&q=80',
-    category: 'events',
-    caption: 'Acceptance speech for Best Director at Chennai International Film Festival',
-    project: 'CIFF Gala Night',
-    location: 'Chennai',
-    year: '2023',
-    aspectRatio: 'square',
-  },
-  {
-    id: 'g12',
-    src: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=1200&q=80',
-    category: 'on-set',
-    caption: 'Steadicam tracking shot through the pre-dawn fish market',
-    project: 'Nilavil Ondru',
-    location: 'Rameshwaram',
-    year: '2023',
-    aspectRatio: 'wide',
-  },
+  { id: 'ceo-1', src: '/ceo/ceo-01.jpg', category: 'ceo', caption: `${NAME} by a boardroom window`, aspectRatio: 'portrait' },
+  { id: 'ceo-2', src: '/ceo/ceo-02.jpg', category: 'ceo', caption: `${NAME} in a maroon suit`, aspectRatio: 'portrait' },
+  { id: 'ceo-3', src: '/ceo/ceo-03.jpg', category: 'ceo', caption: `${NAME} in a navy suit`, aspectRatio: 'portrait' },
+  { id: 'ceo-4', src: '/ceo/ceo-04.jpg', category: 'ceo', caption: `${NAME} at a conference panel`, aspectRatio: 'portrait' },
+  { id: 'chairman-1', src: '/chairman/chairman-01.jpg', category: 'chairman', caption: `${NAME} at sunset in his office`, aspectRatio: 'portrait' },
+  { id: 'chairman-2', src: '/chairman/chairman-02.jpg', category: 'chairman', caption: `${NAME} at the boardroom table`, aspectRatio: 'portrait' },
+  { id: 'chairman-3', src: '/chairman/chairman-03.jpg', category: 'chairman', caption: `${NAME} walking through a lobby`, aspectRatio: 'portrait' },
+  { id: 'chairman-4', src: '/chairman/chairman-04.jpg', category: 'chairman', caption: `${NAME} in a leather armchair`, aspectRatio: 'portrait' },
+  { id: 'producer-1', src: '/producer/producer-01.jpg', category: 'producer', caption: `${NAME} beside a cinema camera`, aspectRatio: 'portrait' },
+  { id: 'producer-2', src: '/producer/producer-02.jpg', category: 'producer', caption: `${NAME} in a director's chair`, aspectRatio: 'portrait' },
+  { id: 'producer-3', src: '/producer/producer-03.jpg', category: 'producer', caption: `${NAME} on a film set`, aspectRatio: 'portrait' },
+  { id: 'producer-4', src: '/producer/producer-04.jpg', category: 'producer', caption: `${NAME}, studio portrait`, aspectRatio: 'portrait' },
 ];

@@ -1,5 +1,9 @@
 import { getEnv } from '../config/env';
 
+/**
+ * Verified facts only. Do not add awards, film titles, statistics or quotes here unless they are real.
+ * Career milestones live in ./timeline.ts.
+ */
 export const filmmaker = {
   name: "S VIJAY KRISHNAN",
   nameShort: "S VIJAY KRISHNAN",
@@ -7,44 +11,21 @@ export const filmmaker = {
   logo: "/logo/apple-touch-icon.png",
   logoHighRes: "/logo/android-chrome-512x512.png",
   tagline: "Crafting Stories That Live Beyond the Screen.",
-  philosophy: "Cinema is where imagination becomes emotion.",
-  bio: "An award-winning Indian filmmaker with a passion for stories that transcend boundaries. With over a decade of experience across feature films, short films, and commercial productions, S Vijay Krishnan brings a distinctive visual language and emotional depth to every frame.",
-  bioExtended:
-    "Born into a world of stories, S Vijay Krishnan discovered the power of cinema as a child watching the timeless classics of Indian cinema. That spark evolved into a lifelong mission: to craft films that resonate deeply, challenge perceptions, and celebrate the rich tapestry of human experience. From the streets of Tamil Nadu to international film festivals, every project is approached with the same unwavering commitment to artistic excellence and authentic storytelling.",
-  roles: ["PRODUCER", "DIRECTOR", "STORYTELLER"],
+  roles: ["CEO", "PRODUCER", "CHAIRMAN"],
+  /** Company he currently leads. */
+  company: "Youpeak Tech",
+  jobTitle: "Chief Executive Officer",
+  bio: "S Vijay Krishnan is the CEO of Youpeak Tech, a role he has held since 2023. From 2021 to 2023 he worked in film as a co-producer and chairman. In 2027 he launches his next movie.",
   location: "Chennai, Tamil Nadu, India",
   email: getEnv('VITE_CONTACT_EMAIL', 'contact@vijaykrishnan.in'),
-  phone: getEnv('VITE_CONTACT_PHONE', '+91 98400 00000'),
+  /** Social profiles are empty until real URLs are set in .env (VITE_SOCIAL_*). Empty ones are hidden. */
   social: {
-    instagram: getEnv('VITE_SOCIAL_INSTAGRAM', 'https://instagram.com/vijaykrishnan'),
-    youtube: getEnv('VITE_SOCIAL_YOUTUBE', 'https://youtube.com/@vijaykrishnan'),
-    imdb: getEnv('VITE_SOCIAL_IMDB', 'https://imdb.com/name/vijaykrishnan'),
-    linkedin: getEnv('VITE_SOCIAL_LINKEDIN', 'https://linkedin.com/in/vijaykrishnan'),
+    instagram: getEnv('VITE_SOCIAL_INSTAGRAM'),
+    youtube: getEnv('VITE_SOCIAL_YOUTUBE'),
+    imdb: getEnv('VITE_SOCIAL_IMDB'),
+    linkedin: getEnv('VITE_SOCIAL_LINKEDIN'),
   },
-  awards: [
-    {
-      title: "Best Director",
-      festival: "Chennai International Film Festival",
-      year: "2023",
-      project: "Nilavil Ondru",
-    },
-    {
-      title: "Special Jury Award",
-      festival: "MAMI Mumbai Film Festival",
-      year: "2022",
-      project: "Kaadu Kuyil",
-    },
-    {
-      title: "Best Short Film",
-      festival: "BIFFES Bangalore",
-      year: "2021",
-      project: "Mazhai",
-    },
-  ],
-  stats: [
-    { number: "12+", label: "Years of Experience" },
-    { number: "8", label: "Feature Films" },
-    { number: "15+", label: "Awards Won" },
-    { number: "3", label: "International Festivals" },
-  ],
 };
+
+/** Social profile URLs that are actually configured. */
+export const socialUrls = (): string[] => Object.values(filmmaker.social).filter(Boolean);

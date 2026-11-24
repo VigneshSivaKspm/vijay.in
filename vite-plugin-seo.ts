@@ -52,11 +52,7 @@ const renderHead = (r: RouteSeo): string => {
 const NAV = [
   ['/', 'Home'],
   ['/about', 'About'],
-  ['/filmography', 'Filmography'],
-  ['/production', 'Production'],
-  ['/creative-vision', 'Creative Vision'],
   ['/gallery', 'Gallery'],
-  ['/press-awards', 'Press & Awards'],
   ['/contact', 'Contact'],
 ] as const;
 
@@ -80,6 +76,7 @@ const renderBody = (r: RouteSeo): string => {
     )
     .join('');
   const social = Object.entries(filmmaker.social)
+    .filter(([, href]) => href)
     .map(([name, href]) => `<a href="${esc(href)}" rel="me noopener" style="${link}">${esc(name)}</a>`)
     .join(' · ');
 
@@ -91,7 +88,7 @@ const renderBody = (r: RouteSeo): string => {
     `<h1 style="font-weight:500;font-size:2.2rem;line-height:1.2">${esc(r.heading)}</h1>`,
     ...r.body.paragraphs.map((p) => `<p>${esc(p)}</p>`),
     lists,
-    `<footer><p>${esc(SITE.company)} · ${esc(filmmaker.location)} · <a href="mailto:${esc(filmmaker.email)}" style="${link}">${esc(filmmaker.email)}</a></p><p>${social}</p></footer>`,
+    `<footer><p>${esc(filmmaker.name)} · ${esc(filmmaker.location)} · <a href="mailto:${esc(filmmaker.email)}" style="${link}">${esc(filmmaker.email)}</a></p><p>${social}</p></footer>`,
     '</main>',
   ].join('');
 };

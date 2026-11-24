@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Phone, Send, CheckCircle, Sparkles } from 'lucide-react';
+import { Mail, MapPin, Send, CheckCircle } from 'lucide-react';
 import { filmmaker } from '../data/filmmaker';
 import { InstagramIcon, YoutubeIcon, LinkedinIcon, ImdbIcon } from '../components/ui/SocialIcons';
 import SectionHeading from '../components/ui/SectionHeading';
@@ -7,60 +7,38 @@ import SectionHeading from '../components/ui/SectionHeading';
 interface FormData {
   fullName: string;
   email: string;
-  phone: string;
   company: string;
-  projectType: string;
-  estimatedBudget: string;
   message: string;
 }
 
 const initialForm: FormData = {
   fullName: '',
   email: '',
-  phone: '',
   company: '',
-  projectType: 'Film Direction',
-  estimatedBudget: 'Flexible / In Discussion',
   message: '',
 };
-
-const projectTypes = [
-  'Film Direction',
-  'Film Production',
-  'Commercial / Brand Film',
-  'Creative Collaboration',
-  'Screenplay / Script Consultation',
-  'Media / Interview / Jury',
-  'Other Inquiry',
-];
-
-const budgetRanges = [
-  'Independent / Micro-Budget (Under ₹1 Cr)',
-  'Medium Canvas (₹1 Cr – ₹5 Cr)',
-  'Mainstream Feature (₹5 Cr – ₹20 Cr)',
-  'Large Canvas / Epic (₹20 Cr+)',
-  'Flexible / In Discussion',
-];
 
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState<FormData>(initialForm);
   const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  // There is no server to receive this form, so hand the message to the visitor's own email app,
+  // addressed to the real contact address. Nothing is claimed as "sent" until they send it.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitting(true);
-    // Simulate real network submission turnaround
-    setTimeout(() => {
-      setSubmitting(false);
-      setSubmitted(true);
-    }, 1000);
+    const subject = `Message from ${formData.fullName}${formData.company ? ` (${formData.company})` : ''}`;
+    const body = `${formData.message}
+
+— ${formData.fullName}
+${formData.email}`;
+    window.location.href = `mailto:${filmmaker.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSubmitted(true);
   };
 
   const handleReset = () => {
@@ -84,7 +62,9 @@ const Contact: React.FC = () => {
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 rounded-full overflow-hidden border border-crimson/50 shadow-[0_0_12px_rgba(255,48,79,0.25)] shrink-0">
               <img
-                src="/logo/apple-touch-icon.png"
+                src="/logo/vk-224.webp"
+                width={224}
+                height={224}
                 alt="Vijay Krishnan"
                 className="w-full h-full object-cover"
               />
@@ -104,11 +84,11 @@ const Contact: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 border-t border-ivory/10 pt-8 items-end">
             <p className="md:col-span-8 body-text text-lg text-ivory/90 leading-relaxed">
-              Have a screenplay, commercial campaign, co-production proposal, or festival invitation? Every landmark cinematic journey begins with a candid, focused conversation.
+              Have a project, a partnership idea or a question? Send a message and start the conversation.
             </p>
             <div className="md:col-span-4 flex md:justify-end">
               <span className="font-display text-xs tracking-widest text-silver/60 uppercase">
-                STUDIO CHENNAI • WORLDWIDE ACCESS
+                CHENNAI • INDIA
               </span>
             </div>
           </div>
@@ -125,24 +105,26 @@ const Contact: React.FC = () => {
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-14 h-14 rounded-full overflow-hidden border border-gold/50 shadow-[0_0_20px_rgba(233,185,110,0.25)] bg-cinemaBlack shrink-0">
                     <img
-                      src="/logo/apple-touch-icon.png"
-                      alt="VK Productions"
+                      src="/logo/vk-224.webp"
+                width={224}
+                height={224}
+                      alt="S Vijay Krishnan"
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div>
-                    <span className="eyebrow text-crimson block mb-1">Direct Headquarters</span>
-                    <span className="font-display text-xl text-ivory tracking-wider">VK PRODUCTIONS</span>
+                    <span className="eyebrow text-crimson block mb-1">Get in touch</span>
+                    <span className="font-display text-xl text-ivory tracking-wider">S VIJAY KRISHNAN</span>
                   </div>
                 </div>
                 <SectionHeading
-                  eyebrow="Reach Us Directly"
-                  heading="VK PRODUCTIONS OFFICE"
+                  eyebrow="Reach Out Directly"
+                  heading="CONTACT DETAILS"
                   accentColor="#FF304F"
                   className="mb-8"
                 />
                 <p className="body-text text-base leading-relaxed mb-8">
-                  Our main studio and development office is headquartered in Chennai’s film district, with representation partners across Mumbai and international festival hubs.
+                  The easiest way to reach S Vijay Krishnan is by email or through the form.
                 </p>
               </div>
 
@@ -160,24 +142,7 @@ const Contact: React.FC = () => {
                     >
                       {filmmaker.email}
                     </a>
-                    <span className="font-body text-xs text-silver/60">Response window: 24-48 business hours</span>
-                  </div>
-                </div>
-
-                <div className="p-6 bg-graphite border border-ivory/10 flex items-start gap-4">
-                  <div className="p-3 bg-cinemaBlack text-gold rounded-full shrink-0">
-                    <Phone size={18} />
-                  </div>
-                  <div>
-                    <p className="eyebrow text-[10px] text-silver/60 uppercase mb-1">Production Desk</p>
-                    <a
-                      href={`tel:${filmmaker.phone}`}
-                      className="font-display text-xl text-ivory hover:text-gold transition-colors block"
-                    >
-                      {filmmaker.phone}
-                    </a>
-                    <span className="font-body text-xs text-silver/60">Direct production manager line</span>
-                  </div>
+                                      </div>
                 </div>
 
                 <div className="p-6 bg-graphite border border-ivory/10 flex items-start gap-4">
@@ -185,60 +150,43 @@ const Contact: React.FC = () => {
                     <MapPin size={18} />
                   </div>
                   <div>
-                    <p className="eyebrow text-[10px] text-silver/60 uppercase mb-1">Creative Suite</p>
-                    <p className="font-display text-xl text-ivory">VK PRODUCTIONS STUDIO</p>
-                    <span className="font-body text-xs text-silver/70">
-                      Alwarpet, Chennai, Tamil Nadu 600018, India
-                    </span>
+                    <p className="eyebrow text-[10px] text-silver/60 uppercase mb-1">Based in</p>
+                    <p className="font-display text-xl text-ivory">{filmmaker.location}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Social Channels */}
-              <div className="pt-6 border-t border-ivory/10">
-                <p className="eyebrow text-gold mb-4">Official Channels & Film Profiles</p>
-                <div className="flex gap-3">
-                  <a
-                    href={filmmaker.social.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 border border-ivory/10 text-silver hover:border-gold hover:text-gold transition-all duration-300"
-                    aria-label="Instagram"
-                  >
-                    <InstagramIcon size={18} />
-                  </a>
-                  <a
-                    href={filmmaker.social.youtube}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 border border-ivory/10 text-silver hover:border-crimson hover:text-crimson transition-all duration-300"
-                    aria-label="YouTube"
-                  >
-                    <YoutubeIcon size={18} />
-                  </a>
-                  <a
-                    href={filmmaker.social.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 border border-ivory/10 text-silver hover:border-royalBlue hover:text-royalBlue transition-all duration-300"
-                    aria-label="LinkedIn"
-                  >
-                    <LinkedinIcon size={18} />
-                  </a>
-                  <a
-                    href={filmmaker.social.imdb}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 border border-ivory/10 text-silver hover:border-gold hover:text-gold transition-all duration-300"
-                    aria-label="IMDb Profile"
-                  >
-                    <ImdbIcon size={18} />
-                  </a>
+              {/* Social Channels — only profiles that are configured */}
+              {Object.values(filmmaker.social).some(Boolean) && (
+                <div className="pt-6 border-t border-ivory/10">
+                  <p className="eyebrow text-gold mb-4">Official Channels</p>
+                  <div className="flex gap-3">
+                    {filmmaker.social.instagram && (
+                      <a href={filmmaker.social.instagram} target="_blank" rel="noopener noreferrer" className="p-3 border border-ivory/10 text-silver hover:border-gold hover:text-gold transition-all duration-300" aria-label="Instagram">
+                        <InstagramIcon size={18} />
+                      </a>
+                    )}
+                    {filmmaker.social.youtube && (
+                      <a href={filmmaker.social.youtube} target="_blank" rel="noopener noreferrer" className="p-3 border border-ivory/10 text-silver hover:border-crimson hover:text-crimson transition-all duration-300" aria-label="YouTube">
+                        <YoutubeIcon size={18} />
+                      </a>
+                    )}
+                    {filmmaker.social.linkedin && (
+                      <a href={filmmaker.social.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 border border-ivory/10 text-silver hover:border-royalBlue hover:text-royalBlue transition-all duration-300" aria-label="LinkedIn">
+                        <LinkedinIcon size={18} />
+                      </a>
+                    )}
+                    {filmmaker.social.imdb && (
+                      <a href={filmmaker.social.imdb} target="_blank" rel="noopener noreferrer" className="p-3 border border-ivory/10 text-silver hover:border-gold hover:text-gold transition-all duration-300" aria-label="IMDb Profile">
+                        <ImdbIcon size={18} />
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* Collaboration Inquiry Form */}
+            {/* Message form (opens the visitor's email app) */}
             <div className="lg:col-span-7">
               <div className="p-8 md:p-12 bg-graphite border border-ivory/10 relative">
                 {submitted ? (
@@ -246,164 +194,53 @@ const Contact: React.FC = () => {
                     <div className="w-16 h-16 bg-teal/10 rounded-full flex items-center justify-center mx-auto mb-6 text-teal border border-teal/30">
                       <CheckCircle size={32} />
                     </div>
-                    <p className="eyebrow text-teal mb-2">Message Dispatched</p>
+                    <p className="eyebrow text-teal mb-2">One more step</p>
                     <h3 className="font-display text-4xl text-ivory mb-4">
-                      INQUIRY RECEIVED
+                      CHECK YOUR EMAIL APP
                     </h3>
                     <p className="body-text text-base max-w-md mx-auto mb-8">
-                      Thank you for reaching out, <strong className="text-ivory">{formData.fullName}</strong>. Your project brief has been securely routed to S Vijay Krishnan’s production desk. We typically review all materials within two business days.
+                      Thanks, <strong className="text-ivory">{formData.fullName}</strong>. Your email app should have opened with your message ready. Press send there to deliver it. If nothing opened, write to{' '}
+                      <a href={`mailto:${filmmaker.email}`} className="text-gold hover:underline">{filmmaker.email}</a>.
                     </p>
                     <button onClick={handleReset} className="btn-secondary text-xs">
-                      Submit Another Inquiry
+                      Write Another Message
                     </button>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
-                      <p className="eyebrow text-gold mb-1">Collaboration Proposal</p>
-                      <h3 className="font-display text-3xl text-ivory mb-6">PROJECT BRIEFING</h3>
+                      <p className="eyebrow text-gold mb-1">Say hello</p>
+                      <h3 className="font-display text-3xl text-ivory mb-6">SEND A MESSAGE</h3>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      {/* Name */}
                       <div>
-                        <label className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">
-                          Your Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          name="fullName"
-                          required
-                          value={formData.fullName}
-                          onChange={handleChange}
-                          placeholder="e.g. Mani Ratnam"
-                          className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors"
-                        />
+                        <label htmlFor="fullName" className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">Your Full Name *</label>
+                        <input id="fullName" type="text" name="fullName" required value={formData.fullName} onChange={handleChange} className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors" />
                       </div>
-
-                      {/* Email */}
                       <div>
-                        <label className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">
-                          Email Address *
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          required
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="name@productionhouse.com"
-                          className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors"
-                        />
+                        <label htmlFor="email" className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">Email Address *</label>
+                        <input id="email" type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors" />
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      {/* Phone */}
-                      <div>
-                        <label className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">
-                          Phone Number (Optional)
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          placeholder="+91 98400 00000"
-                          className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors"
-                        />
-                      </div>
-
-                      {/* Company */}
-                      <div>
-                        <label className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">
-                          Company / Production House
-                        </label>
-                        <input
-                          type="text"
-                          name="company"
-                          value={formData.company}
-                          onChange={handleChange}
-                          placeholder="Studio / Independent Producer"
-                          className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      {/* Project Type */}
-                      <div>
-                        <label className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">
-                          Project Classification *
-                        </label>
-                        <select
-                          name="projectType"
-                          value={formData.projectType}
-                          onChange={handleChange}
-                          className="w-full bg-cinemaBlack border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory outline-none transition-colors"
-                        >
-                          {projectTypes.map((type) => (
-                            <option key={type} value={type}>
-                              {type}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Estimated Budget */}
-                      <div>
-                        <label className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">
-                          Estimated Budget Scope
-                        </label>
-                        <select
-                          name="estimatedBudget"
-                          value={formData.estimatedBudget}
-                          onChange={handleChange}
-                          className="w-full bg-cinemaBlack border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory outline-none transition-colors"
-                        >
-                          {budgetRanges.map((range) => (
-                            <option key={range} value={range}>
-                              {range}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-
-                    {/* Message */}
                     <div>
-                      <label className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">
-                        Project Synopsis & Creative Intent *
-                      </label>
-                      <textarea
-                        name="message"
-                        required
-                        rows={6}
-                        value={formData.message}
-                        onChange={handleChange}
-                        placeholder="Please share the logline, stage of development (treatment, draft, attached talent), anticipated timeline, and the specific nature of collaboration desired..."
-                        className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors resize-none"
-                      />
+                      <label htmlFor="company" className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">Company (Optional)</label>
+                      <input id="company" type="text" name="company" value={formData.company} onChange={handleChange} className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors" />
                     </div>
 
-                    {/* NDA note */}
-                    <div className="flex items-center gap-2 text-xs font-body text-silver/50">
-                      <Sparkles size={12} className="text-gold" />
-                      <span>All scripts and creative IP submitted remain strictly confidential.</span>
+                    <div>
+                      <label htmlFor="message" className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">Message *</label>
+                      <textarea id="message" name="message" required rows={6} value={formData.message} onChange={handleChange} className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors resize-none" />
                     </div>
 
                     <button
                       type="submit"
-                      disabled={submitting}
                       className="w-full btn-primary justify-center text-sm py-5 font-bold tracking-widest uppercase transition-all duration-300"
                     >
-                      {submitting ? (
-                        <span>TRANSMITTING INQUIRY...</span>
-                      ) : (
-                        <span className="flex items-center gap-2">
-                          SUBMIT COLLABORATION BRIEF <Send size={16} />
-                        </span>
-                      )}
+                      <span className="flex items-center gap-2">
+                        COMPOSE EMAIL <Send size={16} />
+                      </span>
                     </button>
                   </form>
                 )}

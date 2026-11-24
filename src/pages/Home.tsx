@@ -1,11 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Play, ArrowRight, ChevronDown, X, Volume2, VolumeX } from 'lucide-react';
+import { ArrowRight, ChevronDown } from 'lucide-react';
 import { filmmaker } from '../data/filmmaker';
-import { gallery } from '../data/gallery';
-import { awards } from '../data/awards';
-import SectionHeading from '../components/ui/SectionHeading';
 import MagneticButton from '../components/ui/MagneticButton';
 import PortraitSlider from '../components/ui/PortraitSlider';
 import CareerTimeline from '../components/sections/CareerTimeline';
@@ -105,7 +102,7 @@ const HeroSection: React.FC = () => {
       <div ref={contentRef} className="relative z-10 container-wide pt-28 pb-20 opacity-0">
         {/* Eyebrow */}
         <p className="eyebrow mb-8 text-silver/60">
-          INDIAN CINEMA&nbsp;&nbsp;•&nbsp;&nbsp;STORIES WITHOUT LIMITS
+          YOUPEAK TECH&nbsp;&nbsp;•&nbsp;&nbsp;FILM
         </p>
 
         {/* Main name */}
@@ -116,7 +113,7 @@ const HeroSection: React.FC = () => {
               KRISHNAN
             </span>
           </span>
-          <span className="sr-only"> — Tamil Film Director &amp; Producer based in Chennai, India</span>
+          <span className="sr-only"> — CEO of Youpeak Tech and film producer, based in Chennai, India</span>
         </h1>
 
         {/* Roles */}
@@ -140,12 +137,12 @@ const HeroSection: React.FC = () => {
 
         {/* CTAs */}
         <div className="flex flex-wrap gap-4">
-          <MagneticButton href="/filmography" variant="primary" data-cursor="EXPLORE">
-            View Filmography
+          <MagneticButton href="/about" variant="primary" data-cursor="EXPLORE">
+            Explore the Journey
             <ArrowRight size={16} />
           </MagneticButton>
           <MagneticButton href="/contact" variant="secondary" data-cursor="CONNECT">
-            Let's Collaborate
+            Get in Touch
           </MagneticButton>
         </div>
       </div>
@@ -169,7 +166,7 @@ const VisionSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Left: Large display text */}
           <div>
-            <p className="eyebrow mb-6 text-crimson">OUR VISION</p>
+            <p className="eyebrow mb-6 text-crimson">THE VISION</p>
             <h2 className="font-display text-5xl md:text-7xl lg:text-8xl leading-none text-ivory mb-6">
               NOT JUST<br />FILMS.
             </h2>
@@ -186,120 +183,18 @@ const VisionSection: React.FC = () => {
           {/* Right: Text + CTA */}
           <div className="lg:pt-24">
             <p className="body-text text-lg md:text-xl mb-8 leading-relaxed">
-              Every project begins with a question: what does this story demand from its audience? The answer shapes everything — the visual language, the pacing, the moments of silence and eruption.
+              Every project begins with a question: what does this story demand from its audience?
             </p>
             <p className="body-text mb-10">
-              From intimate character studies to sweeping epics, the commitment remains constant: to create cinema that resonates long after the credits roll.
+              From the boardroom to the film set, the commitment stays the same: build things that last.
             </p>
             <MagneticButton href="/about" variant="ghost">
-              Discover the Story
+              Read the Story
               <ArrowRight size={14} />
             </MagneticButton>
           </div>
         </div>
-
-        {/* Pull quote */}
-        <div className="mt-20 md:mt-32 border-l-2 border-gold pl-8 max-w-3xl">
-          <p className="font-editorial text-2xl md:text-3xl lg:text-4xl text-ivory font-light leading-relaxed italic">
-            "{filmmaker.philosophy}"
-          </p>
-          <p className="eyebrow mt-4 text-gold">— {filmmaker.nameShort}</p>
-        </div>
       </div>
-    </section>
-  );
-};
-
-// ─── Showreel Section ─────────────────────────────────────────────────────────
-const ShowreelSection: React.FC = () => {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-
-  return (
-    <section className="section-padding bg-graphite relative overflow-hidden">
-      {/* Background Still Image */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <img
-          src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1600&q=80"
-          alt="Cinematic Showreel backdrop"
-          className="w-full h-full object-cover filter blur-[2px]"
-        />
-        <div className="absolute inset-0 bg-graphite/80" />
-      </div>
-
-      {/* Large decorative text */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none overflow-hidden">
-        <span className="font-display text-[200px] md:text-[300px] text-ivory whitespace-nowrap">CINEMA</span>
-      </div>
-
-      <div className="container-wide relative z-10 text-center">
-        <p className="eyebrow mb-6 text-silver">THE ART OF STORYTELLING</p>
-        <h2 className="font-display text-5xl md:text-7xl lg:text-9xl text-ivory mb-16">SHOWREEL</h2>
-
-        {/* Play button */}
-        <div className="flex items-center justify-center mb-16">
-          <button
-            onClick={() => setModalOpen(true)}
-            className="group relative flex items-center justify-center w-24 h-24 md:w-32 md:h-32"
-            data-cursor="PLAY"
-          >
-            <div className="absolute inset-0 rounded-full border-2 border-gold/40 group-hover:border-gold transition-colors duration-500 group-hover:scale-110 transition-transform" />
-            <div className="absolute inset-4 rounded-full bg-gold/10 group-hover:bg-gold/20 transition-colors duration-300" />
-            <Play size={32} className="text-gold ml-2 relative z-10" />
-          </button>
-        </div>
-
-        <p className="body-text max-w-lg mx-auto">
-          A curated selection of work spanning feature films, short films, and commercial productions — each frame a testament to the craft of storytelling.
-        </p>
-      </div>
-
-      {/* Video Modal Player */}
-      {modalOpen && (
-        <div
-          className="fixed inset-0 z-[500] flex items-center justify-center bg-cinemaBlack/95 backdrop-blur-md p-4"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setModalOpen(false);
-          }}
-        >
-          <div className="relative w-full max-w-5xl bg-cinemaBlack border border-ivory/20 overflow-hidden shadow-2xl">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-ivory/10 bg-graphite">
-              <div>
-                <p className="font-display text-lg text-ivory tracking-wide">S VIJAY KRISHNAN — OFFICIAL SHOWREEL</p>
-                <p className="font-body text-[10px] text-silver uppercase tracking-wider">Cinematic Retrospective</p>
-              </div>
-              <button
-                onClick={() => setModalOpen(false)}
-                className="text-silver hover:text-ivory transition-colors p-1"
-                aria-label="Close showreel"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            <div className="relative aspect-video bg-black flex items-center justify-center">
-              <video
-                src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4"
-                autoPlay
-                controls
-                muted={isMuted}
-                className="w-full h-full object-contain"
-              />
-            </div>
-
-            <div className="px-6 py-3 bg-graphite flex items-center justify-between text-xs text-silver font-body">
-              <span>Shot on ARRI Alexa LF & Cooke Anamorphic Glass • 4K DCI</span>
-              <button
-                onClick={() => setIsMuted(!isMuted)}
-                className="hover:text-ivory flex items-center gap-1"
-              >
-                {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-                {isMuted ? 'Unmute Audio' : 'Mute Audio'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 };
@@ -320,7 +215,7 @@ const BioPreview: React.FC = () => {
               VK
             </div>
 
-            <PortraitSlider images={portraits} caption="Director on Set" subcaption="S Vijay Krishnan • Chennai" />
+            <PortraitSlider images={portraits} caption="S Vijay Krishnan" subcaption="CEO • Producer • Chennai" />
           </div>
 
           {/* Text */}
@@ -328,12 +223,14 @@ const BioPreview: React.FC = () => {
             <div className="flex items-center gap-3 mb-4">
               <div className="w-11 h-11 rounded-full overflow-hidden border border-gold/50 shadow-[0_0_15px_rgba(233,185,110,0.25)] bg-cinemaBlack shrink-0">
                 <img
-                  src="/logo/apple-touch-icon.png"
+                  src="/logo/vk-224.webp"
+                width={224}
+                height={224}
                   alt="Vijay Krishnan"
                   className="w-full h-full object-cover"
                 />
               </div>
-              <p className="eyebrow text-gold">THE FILMMAKER • AUTEUR CINEMA</p>
+              <p className="eyebrow text-gold">CEO • PRODUCER • CHAIRMAN</p>
             </div>
             <h2 className="font-display text-5xl md:text-6xl text-ivory leading-none mb-8">
               S VIJAY<br />KRISHNAN
@@ -346,205 +243,10 @@ const BioPreview: React.FC = () => {
               {filmmaker.location}
             </p>
             <MagneticButton href="/about" variant="primary">
-              Discover the Story
+              Read the Story
               <ArrowRight size={16} />
             </MagneticButton>
           </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// ─── Expertise Section ────────────────────────────────────────────────────────
-const expertise = [
-  { number: '01', title: 'Narrative Direction', desc: 'Crafting character-driven stories with a distinctive visual language.' },
-  { number: '02', title: 'Visual Storytelling', desc: 'Translating emotion into imagery — every frame serves the story.' },
-  { number: '03', title: 'Film Production', desc: 'End-to-end production management with artistic integrity intact.' },
-  { number: '04', title: 'Screenplay Writing', desc: 'From concept to script — dialogue that breathes and plot that moves.' },
-  { number: '05', title: 'Casting & Collaboration', desc: 'Building ensembles that elevate the material beyond the page.' },
-  { number: '06', title: 'Post-Production', desc: 'Editorial decisions that rhythm the narrative with intention.' },
-  { number: '07', title: 'Festival Strategy', desc: 'Positioning films for critical acclaim and industry recognition.' },
-  { number: '08', title: 'Commercial Production', desc: 'Brand stories that carry the weight of cinematic craft.' },
-];
-
-const ExpertiseSection: React.FC = () => {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
-  return (
-    <section className="section-padding bg-charcoal overflow-hidden">
-      <div className="container-wide">
-        <SectionHeading
-          eyebrow="Capabilities"
-          heading="WHAT WE BRING TO THE SCREEN"
-          className="mb-16"
-          accentColor="#FF304F"
-        />
-
-        <div className="border-t border-ivory/10">
-          {expertise.map((item, i) => (
-            <div
-              key={item.number}
-              className={`group flex items-center gap-6 md:gap-10 py-5 md:py-6 border-b border-ivory/10 cursor-default transition-all duration-300 ${
-                hoveredIndex === i ? 'pl-4' : ''
-              }`}
-              onMouseEnter={() => setHoveredIndex(i)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              style={{
-                background: hoveredIndex === i ? 'rgba(255,48,79,0.04)' : 'transparent',
-              }}
-            >
-              <span
-                className="font-display text-sm text-silver/30 w-8 shrink-0 transition-colors duration-300"
-                style={{ color: hoveredIndex === i ? '#FF304F' : undefined }}
-              >
-                {item.number}
-              </span>
-              <h3
-                className="font-display text-2xl md:text-3xl text-ivory flex-1 transition-colors duration-300"
-                style={{ color: hoveredIndex === i ? '#F5F0E8' : undefined }}
-              >
-                {item.title}
-              </h3>
-              <p
-                className={`font-body text-sm text-silver max-w-xs hidden md:block transition-all duration-300 ${
-                  hoveredIndex === i ? 'opacity-100' : 'opacity-0'
-                }`}
-              >
-                {item.desc}
-              </p>
-              <div
-                className={`shrink-0 transition-all duration-300 ${
-                  hoveredIndex === i ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-4'
-                }`}
-              >
-                <ArrowRight size={16} className="text-crimson" />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// ─── Behind the Scenes Section ────────────────────────────────────────────────
-const BehindScenes: React.FC = () => {
-  const [lightbox, setLightbox] = useState<null | typeof gallery[0]>(null);
-  const behindItems = gallery.filter((g) => g.category === 'behind-the-scenes' || g.category === 'on-set').slice(0, 6);
-
-  return (
-    <section className="section-padding bg-cinemaBlack overflow-hidden">
-      <div className="container-wide">
-        <SectionHeading
-          eyebrow="Behind the Camera"
-          heading="BEHIND THE SCENES"
-          className="mb-16"
-          accentColor="#2DD4BF"
-        />
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-          {behindItems.map((item, i) => {
-            const heightClass = i === 0 || i === 5 ? 'h-64 md:h-96' : 'h-48 md:h-64';
-            return (
-              <div
-                key={item.id}
-                className={`${heightClass} relative overflow-hidden group cursor-pointer`}
-                onClick={() => setLightbox(item)}
-                data-cursor="VIEW"
-              >
-                <div className="absolute inset-0 bg-cinemaBlack">
-                  <img
-                    src={item.src}
-                    alt={item.caption}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src =
-                        'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&w=1200&q=80';
-                    }}
-                  />
-                </div>
-                <div className="absolute inset-0 bg-cinemaBlack/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <span className="font-body text-xs text-ivory tracking-widest uppercase px-3 py-1 bg-cinemaBlack/80 border border-ivory/20">View Frame</span>
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-cinemaBlack">
-                  <p className="font-body text-xs text-silver">{item.caption}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Lightbox */}
-      {lightbox && (
-        <div
-          className="fixed inset-0 z-[500] flex items-center justify-center bg-cinemaBlack/95 backdrop-blur-md p-4"
-          onClick={() => setLightbox(null)}
-        >
-          <div className="relative max-w-4xl w-full">
-            <img
-              src={lightbox.src}
-              alt={lightbox.caption}
-              className="w-full h-auto max-h-[80vh] object-contain border border-ivory/20"
-            />
-            <p className="font-body text-sm text-silver mt-3 text-center">{lightbox.caption}</p>
-            <button
-              onClick={() => setLightbox(null)}
-              className="absolute -top-10 right-0 text-silver hover:text-ivory transition-colors font-body text-xs tracking-widest uppercase"
-            >
-              Close ✕
-            </button>
-          </div>
-        </div>
-      )}
-    </section>
-  );
-};
-
-// ─── Recognition Section ──────────────────────────────────────────────────────
-const RecognitionSection: React.FC = () => {
-  const wins = awards.filter((a) => a.type === 'win').slice(0, 4);
-
-  return (
-    <section className="section-padding bg-graphite overflow-hidden">
-      <div className="container-wide">
-        <SectionHeading
-          eyebrow="Recognition"
-          heading="AWARDS & RECOGNITION"
-          align="center"
-          className="mb-16"
-          accentColor="#E9B96E"
-        />
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {wins.map((award) => (
-            <div
-              key={award.id}
-              className="relative p-6 border border-ivory/10 hover:border-gold/40 transition-all duration-500 group"
-            >
-              {/* Year in background */}
-              <div className="absolute -top-4 right-4 font-display text-6xl text-ivory/5 select-none group-hover:text-gold/10 transition-colors duration-500">
-                {award.year}
-              </div>
-
-              <div className="relative z-10">
-                <div className="w-8 h-px bg-gold mb-6" />
-                <p className="font-display text-xl text-ivory mb-2">{award.title}</p>
-                <p className="font-body text-xs text-gold tracking-widest uppercase mb-3">{award.project}</p>
-                <p className="font-body text-xs text-silver leading-relaxed">{award.festival}</p>
-                <p className="font-body text-xs text-silver/40 mt-2">{award.country} • {award.year}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-12 text-center">
-          <MagneticButton href="/press-awards" variant="ghost">
-            View All Recognition
-            <ArrowRight size={14} />
-          </MagneticButton>
         </div>
       </div>
     </section>
@@ -624,13 +326,15 @@ const CTASection: React.FC = () => {
         <div className="flex justify-center mb-6">
           <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-gold/50 shadow-[0_0_35px_rgba(233,185,110,0.3)] bg-cinemaBlack">
             <img
-              src="/logo/android-chrome-192x192.png"
+              src="/logo/vk-224.webp"
+                width={224}
+                height={224}
               alt="Vijay Krishnan Logo"
               className="w-full h-full object-cover"
             />
           </div>
         </div>
-        <p className="eyebrow mb-6 text-silver">OPEN FOR COLLABORATION</p>
+        <p className="eyebrow mb-6 text-silver">GET IN TOUCH</p>
         <h2 className="font-display text-5xl md:text-7xl lg:text-9xl text-ivory leading-none mb-8">
           LET'S CREATE<br />
           <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(233,185,110,0.6)' }}>
@@ -639,7 +343,7 @@ const CTASection: React.FC = () => {
           <br />UNFORGETTABLE.
         </h2>
         <p className="body-text max-w-lg mx-auto mb-12">
-          Whether you're a production house, brand, or fellow creative — the conversation starts with a simple hello.
+          Whether you have a project, a partnership or a question — the conversation starts with a simple hello.
         </p>
         <MagneticButton href="/contact" variant="primary" className="text-sm px-10 py-5">
           Start the Conversation
@@ -656,12 +360,8 @@ const Home: React.FC = () => {
     <main>
       <HeroSection />
       <VisionSection />
-      <ShowreelSection />
       <BioPreview />
       <CareerTimeline />
-      <ExpertiseSection />
-      <BehindScenes />
-      <RecognitionSection />
       <PhilosophySection />
       <CTASection />
     </main>

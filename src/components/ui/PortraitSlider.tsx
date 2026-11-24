@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import type { Portrait } from '../../data/portraits';
+import Picture from './Picture';
 
 interface PortraitSliderProps {
   images: Portrait[];
@@ -11,16 +12,13 @@ interface PortraitSliderProps {
   interval?: number;
 }
 
-const FALLBACK_PORTRAIT =
-  'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&w=1000&q=80';
-
 /**
- * Horizontal sliding photo carousel with instant pre-caching, multi-format fallback (PNG & JPG),
+ * Horizontal sliding photo carousel with AVIF/WebP/JPEG delivery, lazy loading of off-screen slides,
  * autoplay, touch swipe, keyboard navigation, and zero-flicker transitions.
  */
 const PortraitSlider: React.FC<PortraitSliderProps> = ({
   images,
-  caption = 'Director on Set',
+  caption = 'S Vijay Krishnan',
   subcaption,
   interval = 4500,
 }) => {
@@ -31,33 +29,6 @@ const PortraitSlider: React.FC<PortraitSliderProps> = ({
   const touchStart = useRef<number | null>(null);
 
   const go = useCallback((dir: 1 | -1) => setIndex((i) => (i + dir + count) % count), [count]);
-
-  // Pre-cache all portraits into the browser cache so slide transitions are instant
-  useEffect(() => {
-    if (!images || images.length === 0) return;
-    const preload = () => {
-      images.forEach((img) => {
-        const p1 = new Image();
-        p1.src = img.pngSrc || img.src;
-        if (img.jpgSrc && img.jpgSrc !== img.src) {
-          const p2 = new Image();
-          p2.src = img.jpgSrc;
-        }
-      });
-    };
-
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const win = window as unknown as {
-        requestIdleCallback: (cb: () => void) => number;
-        cancelIdleCallback: (id: number) => void;
-      };
-      const handle = win.requestIdleCallback(preload);
-      return () => win.cancelIdleCallback(handle);
-    } else {
-      const timer = setTimeout(preload, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [images]);
 
   // Auto-play timer
   useEffect(() => {
@@ -87,7 +58,7 @@ const PortraitSlider: React.FC<PortraitSliderProps> = ({
       className="relative aspect-[3/4] max-w-sm mx-auto lg:mx-0 overflow-hidden border border-ivory/10 bg-charcoal select-none"
       role="region"
       aria-roledescription="carousel"
-      aria-label="Photos of S Vijay Krishnan on set"
+      aria-label="Photos of S Vijay Krishnan"
       tabIndex={0}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -112,7 +83,7 @@ const PortraitSlider: React.FC<PortraitSliderProps> = ({
         const isCurrent = offset === 0;
 
         return (
-          <picture
+          <div
             key={img.src}
             aria-hidden={!isCurrent}
             className="absolute inset-0 w-full h-full"
@@ -123,31 +94,18 @@ const PortraitSlider: React.FC<PortraitSliderProps> = ({
               pointerEvents: isCurrent ? 'auto' : 'none',
             }}
           >
-            <source srcSet={img.pngSrc || img.src} type="image/png" />
-            <source srcSet={img.jpgSrc || img.src.replace(/\.png$/i, '.jpg')} type="image/jpeg" />
-            <img
-              src={img.pngSrc || img.src}
+            <Picture
+              src={img.src}
               alt={img.alt}
+              widths={[480, 720]}
+              sizes="(min-width: 1024px) 384px, 90vw"
               width={720}
               height={900}
-              loading={i === 0 || near ? 'eager' : 'lazy'}
-              decoding="async"
+              loading={i === 0 ? 'eager' : 'lazy'}
               draggable={false}
               className="w-full h-full object-cover object-top"
-              onError={(e) => {
-                const target = e.currentTarget;
-                const currentSrc = target.currentSrc || target.src;
-                if (currentSrc.includes('.png')) {
-                  target.src = currentSrc.replace('.png', '.jpg');
-                } else if (currentSrc.includes('.jpg') && !target.dataset.triedFallback) {
-                  target.dataset.triedFallback = 'true';
-                  target.src = currentSrc.replace('.jpg', '.png');
-                } else {
-                  target.src = FALLBACK_PORTRAIT;
-                }
-              }}
             />
-          </picture>
+          </div>
         );
       })}
 

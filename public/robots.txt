@@ -1,5 +1,8 @@
 # https://vijaykrishnan.in/robots.txt
+# Public site: every crawler (search engines and AI search bots) may crawl all pages.
+# To opt out of a specific bot, add a block such as:  User-agent: GPTBot  /  Disallow: /
 User-agent: *
 Allow: /
+Disallow: /api/
 
 Sitemap: https://vijaykrishnan.in/sitemap.xml

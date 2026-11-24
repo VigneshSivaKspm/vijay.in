@@ -61,9 +61,6 @@ export default defineConfig(async ({ mode }) => {
         output: {
           manualChunks(id: string) {
             if (id.includes('node_modules')) {
-              if (id.includes('three') || id.includes('@react-three')) {
-                return 'vendor-three';
-              }
               if (id.includes('gsap') || id.includes('framer-motion') || id.includes('@studio-freight/lenis')) {
                 return 'vendor-animation';
               }

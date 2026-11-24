@@ -30,7 +30,9 @@ const NotFound: React.FC = () => {
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-full overflow-hidden border border-crimson/50 shadow-[0_0_20px_rgba(255,48,79,0.3)] bg-graphite shrink-0">
               <img
-                src="/logo/apple-touch-icon.png"
+                src="/logo/vk-224.webp"
+                width={224}
+                height={224}
                 alt="Vijay Krishnan"
                 className="w-full h-full object-cover"
               />
