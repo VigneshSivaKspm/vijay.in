@@ -49,11 +49,14 @@ const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 const env = (name: string) => process.env[name]?.trim() ?? '';
 
 // Tried in order. If one is unavailable (retired, rate limited, overloaded) the next one answers.
-const MODELS: ModelChoice[] = [
-  { id: env('GROQ_MODEL') || 'openai/gpt-oss-120b', extra: env('GROQ_MODEL') ? {} : { reasoning_effort: 'low' } },
-  { id: 'qwen/qwen3.8-27b', extra: { reasoning_effort: 'none' } },
-  { id: 'openai/gpt-oss-20b', extra: { reasoning_effort: 'low' } },
-];
+const getModels = (): ModelChoice[] => {
+  const override = env('GROQ_MODEL');
+  return [
+    { id: override || 'openai/gpt-oss-120b', extra: override ? {} : { reasoning_effort: 'low' } },
+    { id: 'qwen/qwen3.8-27b', extra: { reasoning_effort: 'none' } },
+    { id: 'openai/gpt-oss-20b', extra: { reasoning_effort: 'low' } },
+  ];
+};
 
 const MAX_TURNS = 12; // most recent messages sent to the model
 const MAX_CHARS = 1200; // per message
@@ -148,34 +151,40 @@ async function streamFromModel(
   let buffer = '';
   let started = false;
 
+  const emitLine = (raw: string) => {
+    const line = raw.trim();
+    if (!line.startsWith('data:')) return;
+    const data = line.slice(5).trim();
+    if (!data || data === '[DONE]') return;
+    let chunk: { choices?: Array<{ delta?: { content?: string } }> };
+    try {
+      chunk = JSON.parse(data);
+    } catch {
+      return;
+    }
+    const text = chunk?.choices?.[0]?.delta?.content; // reasoning tokens arrive in delta.reasoning and are ignored
+    if (!text) return;
+    if (!started) {
+      started = true;
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-store, no-transform');
+      res.setHeader('X-Accel-Buffering', 'no');
+    }
+    res.write(text);
+  };
+
   for (;;) {
     const { done, value } = await reader.read();
     if (done) break;
     buffer += decoder.decode(value, { stream: true });
     const lines = buffer.split('\n');
     buffer = lines.pop() ?? '';
-    for (const raw of lines) {
-      const line = raw.trim();
-      if (!line.startsWith('data:')) continue;
-      const data = line.slice(5).trim();
-      if (!data || data === '[DONE]') continue;
-      let chunk: { choices?: Array<{ delta?: { content?: string } }> };
-      try {
-        chunk = JSON.parse(data);
-      } catch {
-        continue;
-      }
-      const text = chunk?.choices?.[0]?.delta?.content; // reasoning tokens arrive in delta.reasoning and are ignored
-      if (!text) continue;
-      if (!started) {
-        started = true;
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/plain; charset=utf-8');
-        res.setHeader('Cache-Control', 'no-store, no-transform');
-        res.setHeader('X-Accel-Buffering', 'no');
-      }
-      res.write(text);
-    }
+    for (const raw of lines) emitLine(raw);
+  }
+  buffer += decoder.decode();
+  if (buffer) {
+    for (const raw of buffer.split('\n')) emitLine(raw);
   }
   return started;
 }
@@ -210,21 +219,30 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
 
   // Stop paying for tokens nobody will read if the visitor closes the chat mid-answer.
   const controller = new AbortController();
+  let timedOut = false;
   res.on('close', () => {
     if (!res.writableEnded) controller.abort();
   });
-  const timeout = setTimeout(() => controller.abort(), 25000);
+  const timeout = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, 25000);
 
   let rateLimitedUpstream = false;
   try {
-    for (const model of MODELS) {
+    for (const model of getModels()) {
       try {
         if (await streamFromModel(model, messages, res, controller, apiKey)) {
           return res.end();
         }
         console.warn(`[chat] ${model.id} returned no answer text; trying the next model.`);
       } catch (err) {
-        if (controller.signal.aborted) return res.end();
+        if (controller.signal.aborted) {
+          if (timedOut && !res.headersSent) {
+            return res.status(504).json({ error: 'The assistant took too long to respond. Please try again.' });
+          }
+          return res.end();
+        }
         console.error('[chat]', err instanceof Error ? err.message : err);
         if ((err as UpstreamError)?.status === 429) rateLimitedUpstream = true;
         if (res.headersSent) return res.end(); // already part-way through an answer: never splice in a second model

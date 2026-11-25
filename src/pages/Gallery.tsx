@@ -84,7 +84,7 @@ const Gallery: React.FC = () => {
 
           <h1 className="font-display text-[64px] sm:text-[90px] md:text-[130px] lg:text-[160px] leading-[0.88] text-ivory tracking-tight mb-8">
             THE CAREER<br />
-            <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(45,212,191,0.8)' }}>
+            <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(13,148,136,0.85)' }}>
               IN FRAMES.
             </span>
           </h1>

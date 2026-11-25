@@ -16,7 +16,7 @@ const About: React.FC = () => {
           className="absolute inset-0 opacity-20 pointer-events-none"
           style={{
             background:
-              'radial-gradient(circle at 75% 30%, #E9B96E18 0%, transparent 60%), radial-gradient(circle at 20% 70%, #FF304F15 0%, transparent 60%)',
+              'radial-gradient(circle at 75% 30%, #AD761E18 0%, transparent 60%), radial-gradient(circle at 20% 70%, #D91A3C15 0%, transparent 60%)',
           }}
         />
 
@@ -35,7 +35,7 @@ const About: React.FC = () => {
 
           <h1 className="font-display text-[64px] sm:text-[90px] md:text-[130px] lg:text-[160px] leading-[0.88] text-ivory tracking-tight mb-8">
             S VIJAY<br />
-            <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(233,185,110,0.8)' }}>
+            <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(173,118,30,0.85)' }}>
               KRISHNAN.
             </span>
           </h1>
@@ -81,7 +81,7 @@ const About: React.FC = () => {
               <SectionHeading
                 eyebrow="The Person"
                 heading="CEO. PRODUCER. CHAIRMAN."
-                accentColor="#E9B96E"
+                accentColor="#AD761E"
                 className="mb-8"
               />
 
@@ -108,7 +108,7 @@ const About: React.FC = () => {
       <section className="section-padding bg-charcoal" aria-labelledby="faq-heading">
         <div className="container-wide max-w-3xl">
           <div id="faq-heading">
-            <SectionHeading eyebrow="Quick answers" heading="FREQUENTLY ASKED QUESTIONS" accentColor="#E9B96E" className="mb-12" />
+            <SectionHeading eyebrow="Quick answers" heading="FREQUENTLY ASKED QUESTIONS" accentColor="#AD761E" className="mb-12" />
           </div>
           <div className="divide-y divide-ivory/10 border-y border-ivory/10">
             {faq.map((item) => (

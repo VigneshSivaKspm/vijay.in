@@ -1,11 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ArrowRight, ChevronDown } from 'lucide-react';
+import { ArrowRight, ChevronDown, Eye } from 'lucide-react';
 import { filmmaker } from '../data/filmmaker';
 import MagneticButton from '../components/ui/MagneticButton';
 import PortraitSlider from '../components/ui/PortraitSlider';
 import CareerTimeline from '../components/sections/CareerTimeline';
+import AnimatedNumber from '../components/ui/AnimatedNumber';
+import { useSiteMetrics } from '../context/SiteMetricsContext';
 import { portraits } from '../data/portraits';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -26,6 +28,7 @@ const HeroSection: React.FC = () => {
   const bgRef = useRef<HTMLDivElement>(null);
   const rolesRef = useRef<HTMLDivElement>(null);
   const [currentRole, setCurrentRole] = useState(0);
+  const { visitsCount, isLive } = useSiteMetrics();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -63,7 +66,7 @@ const HeroSection: React.FC = () => {
         className="absolute inset-0 will-change-transform"
         style={{
           background:
-            'radial-gradient(ellipse 80% 80% at 50% -20%, rgba(139,92,246,0.15) 0%, transparent 50%), radial-gradient(ellipse 60% 60% at 80% 80%, rgba(255,48,79,0.08) 0%, transparent 50%), linear-gradient(180deg, #08080B 0%, #111116 50%, #08080B 100%)',
+            'radial-gradient(ellipse 80% 80% at 50% -20%, rgba(124,58,237,0.08) 0%, transparent 50%), radial-gradient(ellipse 60% 60% at 80% 80%, rgba(217,26,60,0.05) 0%, transparent 50%), linear-gradient(180deg, #FAF9F6 0%, #F2F0EA 50%, #FAF9F6 100%)',
         }}
       />
 
@@ -73,7 +76,7 @@ const HeroSection: React.FC = () => {
           className="absolute inset-0"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(245,240,232,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(245,240,232,0.5) 1px, transparent 1px)',
+              'linear-gradient(rgba(20,20,24,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(20,20,24,0.12) 1px, transparent 1px)',
             backgroundSize: '80px 80px',
           }}
         />
@@ -90,16 +93,44 @@ const HeroSection: React.FC = () => {
 
       {/* Content */}
       <div className="relative z-10 container-wide pt-28 pb-20 animate-fade-up motion-reduce:animate-none">
-        {/* Eyebrow */}
-        <p className="eyebrow mb-8 text-silver/80">
-          YOUPEAK TECH&nbsp;&nbsp;•&nbsp;&nbsp;FILM
-        </p>
+        {/* Top header row: Eyebrow + Modern Total Visits Counter */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          <p className="eyebrow text-silver/80">
+            YOUPEAK TECH&nbsp;&nbsp;•&nbsp;&nbsp;FILM
+          </p>
+
+          <div className="inline-flex items-center gap-4 px-4 py-2.5 rounded-xl bg-charcoal/80 backdrop-blur-md border border-ivory/10 shadow-[0_8px_30px_rgba(20,20,24,0.06)] self-start sm:self-auto">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-gold/10 border border-gold/30 text-gold shrink-0">
+              <Eye size={18} />
+            </div>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-teal" />
+                </span>
+                <span className="font-body text-[10px] font-semibold tracking-[0.25em] uppercase text-silver">
+                  Website Total Visits
+                </span>
+              </div>
+              <div className="flex items-baseline gap-2 mt-0.5">
+                <AnimatedNumber
+                  value={visitsCount}
+                  className="font-display text-2xl md:text-3xl tracking-wide text-ivory leading-none"
+                />
+                <span className="font-caption italic text-xs text-silver/80">
+                  {isLive ? 'Live' : 'Tracked'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Main name */}
         <h1 className="font-display text-[70px] sm:text-[90px] md:text-[130px] lg:text-[160px] xl:text-[200px] leading-none tracking-tight mb-8 md:mb-12">
           <span className="block overflow-hidden mb-4 text-ivory">S VIJAY</span>
           <span className="block overflow-hidden">
-            <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(245,240,232,0.4)' }}>
+            <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(20,20,24,0.65)' }}>
               KRISHNAN
             </span>
           </span>
@@ -161,7 +192,7 @@ const VisionSection: React.FC = () => {
               NOT JUST<br />FILMS.
             </h2>
             <h2 className="font-display text-5xl md:text-7xl lg:text-8xl leading-none">
-              <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(233,185,110,0.6)' }}>
+              <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(173,118,30,0.85)' }}>
                 UNFORGETTABLE
               </span>
             </h2>
@@ -250,7 +281,7 @@ const BioPreview: React.FC = () => {
 // ─── Creative Philosophy Section ──────────────────────────────────────────────
 const PhilosophySection: React.FC = () => {
   const words = ['IMAGINE.', 'CREATE.', 'CAPTURE.', 'INSPIRE.'];
-  const colors = ['#8B5CF6', '#FF304F', '#E9B96E', '#2DD4BF'];
+  const colors = ['#7C3AED', '#D91A3C', '#AD761E', '#0D9488'];
   const [active, setActive] = useState(0);
 
   useEffect(() => {
@@ -264,14 +295,14 @@ const PhilosophySection: React.FC = () => {
     <section
       className="section-padding relative overflow-hidden flex items-center"
       style={{
-        background: 'linear-gradient(180deg, #08080B 0%, #111116 50%, #08080B 100%)',
+        background: 'linear-gradient(180deg, #FAF9F6 0%, #F2F0EA 50%, #FAF9F6 100%)',
         minHeight: '70vh',
       }}
     >
       <div
         className="absolute inset-0 transition-all duration-1000"
         style={{
-          background: `radial-gradient(ellipse 60% 60% at 50% 50%, ${colors[active]}10, transparent)`,
+          background: `radial-gradient(ellipse 60% 60% at 50% 50%, ${colors[active]}08, transparent)`,
         }}
       />
 
@@ -286,7 +317,7 @@ const PhilosophySection: React.FC = () => {
               <span
                 className="block font-display text-6xl md:text-8xl lg:text-[120px] leading-none transition-all duration-700"
                 style={{
-                  color: active === i ? colors[i] : 'rgba(245,240,232,0.1)',
+                  color: active === i ? colors[i] : 'rgba(20,20,24,0.08)',
                   transform: active === i ? 'translateY(0)' : 'translateY(10px)',
                   fontSize: active === i ? undefined : undefined,
                 }}
@@ -310,7 +341,7 @@ const CTASection: React.FC = () => {
         className="absolute inset-0 opacity-20"
         style={{
           background:
-            'conic-gradient(from 180deg at 50% 50%, #FF304F 0deg, #8B5CF6 90deg, #E9B96E 180deg, #2DD4BF 270deg, #FF304F 360deg)',
+            'conic-gradient(from 180deg at 50% 50%, #D91A3C 0deg, #7C3AED 90deg, #AD761E 180deg, #0D9488 270deg, #D91A3C 360deg)',
           filter: 'blur(60px)',
           transform: 'scale(1.5)',
         }}
@@ -331,7 +362,7 @@ const CTASection: React.FC = () => {
         <p className="eyebrow mb-6 text-silver">GET IN TOUCH</p>
         <h2 className="font-display text-5xl md:text-7xl lg:text-9xl text-ivory leading-none mb-8">
           LET'S CREATE<br />
-          <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(233,185,110,0.6)' }}>
+          <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(173,118,30,0.85)' }}>
             SOMETHING
           </span>
           <br />UNFORGETTABLE.

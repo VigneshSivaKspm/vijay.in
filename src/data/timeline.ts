@@ -43,7 +43,7 @@ export const timeline: TimelineEntry[] = [
       'Worked in film as a co-producer and chairman from 2021 to 2023.',
     tags: ['Film', 'Co-Producer', 'Chairman'],
     icon: 'film',
-    accent: '#FF304F',
+    accent: '#D91A3C',
     photos: [
       { src: '/producer/producer-01.jpg', label: 'Producer', alt: `${NAME} as film producer, seated beside a cinema camera on set` },
       { src: '/producer/producer-02.jpg', label: 'Producer', alt: `${NAME} in a director's chair surrounded by studio lights` },
@@ -67,7 +67,7 @@ export const timeline: TimelineEntry[] = [
       'Chief Executive Officer of Youpeak Tech since 2023.',
     tags: ['Youpeak Tech', 'CEO'],
     icon: 'briefcase',
-    accent: '#E9B96E',
+    accent: '#AD761E',
     photos: [
       { src: '/ceo/ceo-01.jpg', label: 'CEO · Youpeak Tech', alt: `${NAME}, CEO of Youpeak Tech, by a boardroom window` },
       { src: '/ceo/ceo-02.jpg', label: 'CEO · Youpeak Tech', alt: `${NAME} in a maroon suit walking through a modern lobby` },
@@ -86,7 +86,7 @@ export const timeline: TimelineEntry[] = [
       'A new movie launches in 2027. More details to come.',
     tags: ['New Movie', '2027', 'Stay Tuned'],
     icon: 'clapperboard',
-    accent: '#8B5CF6',
+    accent: '#7C3AED',
     photos: [
       { src: '/producer/producer-02.jpg', label: 'Coming Soon', alt: `${NAME} in a director's chair on a film set` },
       { src: '/producer/producer-03.jpg', label: 'Coming Soon', alt: `${NAME} standing in front of a film light and camera` },

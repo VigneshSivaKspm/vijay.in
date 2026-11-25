@@ -36,27 +36,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── CSS Custom Properties ─────────────────────────────── */
+/* ─── CSS Custom Properties (Light Theme) ────────────────── */
 :root {
-  --cinema-black: #08080B;
-  --charcoal: #111116;
-  --graphite: #1B1B23;
-  --ivory: #F5F0E8;
-  --silver: #A7A5AF;
-  --crimson: #FF304F;
-  --gold: #E9B96E;
-  --violet: #8B5CF6;
-  --magenta: #F542A7;
-  --royal-blue: #3478F6;
-  --orange: #FF793F;
-  --teal: #2DD4BF;
+  --cinema-black: 250 249 246; /* #FAF9F6 Warm Ivory/Alabaster Page Canvas */
+  --charcoal: 242 240 234;     /* #F2F0EA Soft Sand Surface for sections & cards */
+  --graphite: 232 230 223;     /* #E8E6DF Elevated Light Surface / Inputs / Chips */
+  --ivory: 20 20 24;           /* #141418 Deep Ink Black for Primary Text & Headings */
+  --silver: 92 91 102;         /* #5C5B66 Refined Slate Grey for Body & Muted Text */
+  --crimson: 217 26 60;        /* #D91A3C High-Contrast Directorial Crimson */
+  --gold: 173 118 30;          /* #AD761E Rich Warm Antique Gold (legible on light) */
+  --violet: 124 58 237;        /* #7C3AED */
+  --magenta: 219 39 119;       /* #DB2777 */
+  --royal-blue: 37 99 235;     /* #2563EB */
+  --orange: 234 88 12;         /* #EA580C */
+  --teal: 13 148 136;          /* #0D9488 */
 }
 
 /* ─── Base Styles ────────────────────────────────────────── */
 @layer base {
   html {
     scroll-behavior: auto !important;
-    background-color: var(--cinema-black);
+    background-color: rgb(var(--cinema-black));
   }
 
   body {
@@ -88,23 +88,23 @@
   }
 
   ::selection {
-    background-color: var(--crimson);
-    color: var(--ivory);
+    background-color: rgb(var(--crimson));
+    color: #ffffff;
   }
 
   /* Custom Scrollbar */
   ::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: var(--cinema-black);
+    background: #FAF9F6;
   }
   ::-webkit-scrollbar-thumb {
-    background: var(--gold);
-    border-radius: 2px;
+    background: #D5D2C7;
+    border-radius: 3px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--crimson);
+    background: #AD761E;
   }
 }
 
@@ -116,7 +116,7 @@
   height: 200%;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.028;
+  opacity: 0.018;
   animation: grain 0.4s steps(1) infinite;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
   background-size: 256px 256px;
@@ -133,11 +133,11 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center gap-2 px-8 py-4 bg-[#CF1B3E] text-ivory font-body font-semibold text-sm tracking-widest uppercase transition-all duration-300 hover:bg-[#B8173A];
+    @apply inline-flex items-center gap-2 px-8 py-4 bg-[#D91A3C] text-white font-body font-semibold text-sm tracking-widest uppercase transition-all duration-300 hover:bg-[#B81532] shadow-sm;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center gap-2 px-8 py-4 border border-ivory/30 text-ivory font-body font-semibold text-sm tracking-widest uppercase transition-all duration-300 hover:border-gold hover:text-gold;
+    @apply inline-flex items-center gap-2 px-8 py-4 border border-ivory/25 bg-white/80 text-ivory font-body font-semibold text-sm tracking-widest uppercase transition-all duration-300 hover:border-gold hover:text-gold shadow-sm;
   }
 
   .btn-ghost {

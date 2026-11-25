@@ -80,7 +80,7 @@ const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            'linear-gradient(90deg, transparent 0%, rgba(233,185,110,0.15) 50%, transparent 100%)',
+            'linear-gradient(90deg, transparent 0%, rgba(173,118,30,0.18) 50%, transparent 100%)',
         }}
         aria-hidden="true"
       />

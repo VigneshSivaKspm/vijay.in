@@ -20,8 +20,8 @@ export const filmmaker = {
   email: getEnv('VITE_CONTACT_EMAIL', 'contact@vijaykrishnan.in'),
   /** Shown and linked with tel:. VITE_CONTACT_PHONE overrides it. */
   phone: getEnv('VITE_CONTACT_PHONE', '+91 90876 15708'),
-  /** Optional. Digits only with country code, e.g. 919876543210. A WhatsApp button appears only when set. */
-  whatsapp: getEnv('VITE_WHATSAPP_NUMBER').replace(/\D/g, ''),
+  /** Digits only with country code, e.g. 919087615708. VITE_WHATSAPP_NUMBER overrides it. */
+  whatsapp: getEnv('VITE_WHATSAPP_NUMBER', '919087615708').replace(/\D/g, ''),
   /** Social profiles are empty until real URLs are set in .env (VITE_SOCIAL_*). Empty ones are hidden. */
   social: {
     instagram: getEnv('VITE_SOCIAL_INSTAGRAM'),

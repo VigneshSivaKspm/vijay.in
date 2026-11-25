@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
@@ -18,6 +18,7 @@ import FilmGrain from './components/cinematic/FilmGrain';
 import Preloader from './components/cinematic/Preloader';
 import PageTransition from './components/cinematic/PageTransition';
 import ChatAssistant from './components/chatbot/ChatAssistant';
+import { SiteMetricsProvider, useSiteMetrics } from './context/SiteMetricsContext';
 import { useSeo } from './seo/useSeo';
 import { shouldShowPreloader, markPreloaderShown } from './seo/preloaderPolicy';
 import { initAnalytics, trackPageView } from './analytics/analytics';
@@ -28,6 +29,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 function AppInner() {
   const location = useLocation();
+  const { trackActivity } = useSiteMetrics();
+  const isFirstRouteRef = useRef(true);
   useSeo(location.pathname);
 
   // Analytics (only active when VITE_GA4_ID or VITE_GTM_ID is set): start after first paint, then report each route.
@@ -46,7 +49,12 @@ function AppInner() {
 
   useEffect(() => {
     trackPageView(location.pathname, document.title);
-  }, [location.pathname]);
+    if (isFirstRouteRef.current) {
+      isFirstRouteRef.current = false;
+      return;
+    }
+    trackActivity('page_view', { page_path: location.pathname });
+  }, [location.pathname, trackActivity]);
 
   useEffect(() => {
     const lenis = (window as unknown as { __lenis?: { scrollTo: (target: number, opts?: { immediate?: boolean }) => void } }).__lenis;
@@ -131,9 +139,11 @@ function App() {
       <CustomCursor />
       {loading && <Preloader onComplete={handlePreloaderComplete} />}
       <div style={{ visibility: loading ? 'hidden' : 'visible' }}>
-        <BrowserRouter>
-          <AppInner />
-        </BrowserRouter>
+        <SiteMetricsProvider>
+          <BrowserRouter>
+            <AppInner />
+          </BrowserRouter>
+        </SiteMetricsProvider>
       </div>
     </>
   );

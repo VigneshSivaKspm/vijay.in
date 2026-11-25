@@ -15,7 +15,9 @@ function devChatApi(env: Record<string, string>): Plugin {
       name: 'vijay-dev-chat-api',
       apply: 'serve',
       configureServer(server) {
-        for (const [key, value] of Object.entries(env)) process.env[key] ??= value;
+        for (const [key, value] of Object.entries(env)) {
+          if (!process.env[key] && value) process.env[key] = value;
+        }
 
         server.middlewares.use('/api/chat', async (req, res) => {
           const chunks: Buffer[] = [];
@@ -50,7 +52,9 @@ function devChatApi(env: Record<string, string>): Plugin {
 export default defineConfig(async ({ mode }) => {
   // Expose .env to Node *before* the SEO plugin (which reads VITE_SITE_URL etc.) is evaluated.
   const env = loadEnv(mode, process.cwd(), '');
-  for (const [key, value] of Object.entries(env)) process.env[key] ??= value;
+  for (const [key, value] of Object.entries(env)) {
+    if (!process.env[key] && value) process.env[key] = value;
+  }
   const { default: seo } = await import('./vite-plugin-seo');
 
   return {

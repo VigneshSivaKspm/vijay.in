@@ -79,7 +79,7 @@ ${formData.email}`;
 
           <h1 className="font-display text-[64px] sm:text-[90px] md:text-[130px] lg:text-[160px] leading-[0.88] text-ivory tracking-tight mb-8">
             GREAT CINEMA<br />
-            <span className="text-transparent" style={{ WebkitTextStroke: '1px rgba(255,48,79,0.8)' }}>
+            <span className="text-transparent" style={{ WebkitTextStroke: '1.5px rgba(217,26,60,0.85)' }}>
               STARTS HERE.
             </span>
           </h1>
@@ -179,6 +179,9 @@ ${formData.email}`;
                       >
                         Message on WhatsApp
                       </a>
+                      <span className="font-body text-xs text-silver/80 mt-0.5 block">
+                        +{filmmaker.whatsapp.slice(0, 2)} {filmmaker.whatsapp.slice(2, 7)} {filmmaker.whatsapp.slice(7)}
+                      </span>
                     </div>
                   </div>
                 )}

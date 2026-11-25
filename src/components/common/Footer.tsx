@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUp, MapPin, Mail, Phone } from 'lucide-react';
+import { ArrowUp, MapPin, Mail, Phone, MessageCircle } from 'lucide-react';
 import { filmmaker } from '../../data/filmmaker';
 import { InstagramIcon, YoutubeIcon, LinkedinIcon, ImdbIcon } from '../ui/SocialIcons';
 
@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
         <div className="overflow-hidden">
           <p aria-hidden="true"
             className="font-display text-[80px] md:text-[120px] lg:text-[160px] leading-none tracking-tight text-transparent select-none"
-            style={{ lineHeight: 0.85, WebkitTextStroke: '1px rgba(245,240,232,0.07)' }}
+            style={{ lineHeight: 0.85, WebkitTextStroke: '1px rgba(20,20,24,0.06)' }}
           >
             {filmmaker.name}
           </p>
@@ -119,6 +119,19 @@ const Footer: React.FC = () => {
                   {filmmaker.phone}
                 </a>
               </div>
+              {filmmaker.whatsapp && (
+                <div className="flex items-start gap-3">
+                  <MessageCircle size={14} className="text-silver mt-1 shrink-0" />
+                  <a
+                    href={`https://wa.me/${filmmaker.whatsapp}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-body text-sm text-silver hover:text-ivory transition-colors duration-300"
+                  >
+                    WhatsApp
+                  </a>
+                </div>
+              )}
               <div className="flex items-start gap-3">
                 <MapPin size={14} className="text-silver mt-1 shrink-0" />
                 <span className="font-body text-sm text-silver">{filmmaker.location}</span>

@@ -8,7 +8,7 @@ interface LightLeakProps {
 }
 
 const LightLeak: React.FC<LightLeakProps> = ({
-  color = '#E9B96E',
+  color = '#AD761E',
   size = '600px',
   position = 'top-0 right-0',
   className = '',

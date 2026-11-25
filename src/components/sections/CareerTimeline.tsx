@@ -94,12 +94,12 @@ const SpineNode: React.FC<{ entry: TimelineEntry; reached: boolean }> = ({ entry
           />
         )}
         <div
-          className={`relative grid h-full w-full place-items-center rounded-full bg-[#0D0D12] transition-all duration-700 ${
+          className={`relative grid h-full w-full place-items-center rounded-full bg-graphite transition-all duration-700 ${
             entry.status === 'upcoming' ? 'border border-dashed' : 'border'
           }`}
           style={{
-            borderColor: reached ? entry.accent : 'rgba(245,240,232,0.18)',
-            color: reached ? entry.accent : 'rgba(167,165,175,0.6)',
+            borderColor: reached ? entry.accent : 'rgba(20,20,24,0.15)',
+            color: reached ? entry.accent : 'rgba(92,91,102,0.7)',
             boxShadow: reached ? `0 0 0 6px ${entry.accent}1A, 0 0 32px ${entry.accent}55` : 'none',
           }}
         >
@@ -186,7 +186,7 @@ const ChapterText: React.FC<{ entry: TimelineEntry; chapter: number; reached: bo
             {single ? (
               <span
                 className="block bg-clip-text pb-1 text-[6.5rem] leading-[0.85] text-transparent md:text-[9rem] xl:text-[11rem]"
-                style={{ backgroundImage: `linear-gradient(180deg, #F5F0E8 15%, ${entry.accent} 120%)` }}
+                style={{ backgroundImage: `linear-gradient(180deg, #141418 15%, ${entry.accent} 120%)` }}
               >
                 {entry.title[0]}
               </span>
@@ -207,7 +207,7 @@ const ChapterText: React.FC<{ entry: TimelineEntry; chapter: number; reached: bo
                       last
                         ? entry.status === 'upcoming'
                           ? {
-                              backgroundImage: `linear-gradient(90deg, ${entry.accent} 0%, #F5F0E8 25%, ${entry.accent} 50%, #F5F0E8 75%, ${entry.accent} 100%)`,
+                              backgroundImage: `linear-gradient(90deg, ${entry.accent} 0%, #141418 25%, ${entry.accent} 50%, #141418 75%, ${entry.accent} 100%)`,
                             }
                           : { WebkitTextStroke: `1.5px ${entry.accent}` }
                         : undefined
@@ -350,21 +350,18 @@ const CareerTimeline: React.FC = () => {
     <section
       id="timeline"
       aria-labelledby="timeline-heading"
-      className="section-padding relative overflow-x-clip"
-      style={{
-        background: 'linear-gradient(180deg, #08080B 0%, #0D0D12 10%, #0D0D12 90%, #111116 100%)',
-      }}
+      className="section-padding relative overflow-x-clip bg-cinemaBlack"
     >
       {/* Ambient colour glows, one per chapter */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 top-[18%] h-[34rem] w-[34rem] rounded-full bg-crimson opacity-[0.06] blur-[120px]" />
-        <div className="absolute -right-40 top-[46%] h-[34rem] w-[34rem] rounded-full bg-gold opacity-[0.07] blur-[120px]" />
-        <div className="absolute -left-32 bottom-[6%] h-[32rem] w-[32rem] rounded-full bg-violet opacity-[0.09] blur-[120px]" />
+        <div className="absolute -left-40 top-[18%] h-[34rem] w-[34rem] rounded-full bg-crimson opacity-[0.05] blur-[120px]" />
+        <div className="absolute -right-40 top-[46%] h-[34rem] w-[34rem] rounded-full bg-gold opacity-[0.06] blur-[120px]" />
+        <div className="absolute -left-32 bottom-[6%] h-[32rem] w-[32rem] rounded-full bg-violet opacity-[0.06] blur-[120px]" />
         <div
-          className="absolute inset-0 opacity-[0.025]"
+          className="absolute inset-0 opacity-[0.03]"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(245,240,232,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(245,240,232,0.6) 1px, transparent 1px)',
+              'linear-gradient(rgba(20,20,24,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(20,20,24,0.08) 1px, transparent 1px)',
             backgroundSize: '90px 90px',
           }}
         />
@@ -376,7 +373,7 @@ const CareerTimeline: React.FC = () => {
             eyebrow="Timeline"
             heading="THE JOURNEY SO FAR"
             subtext="From the sets to the boardroom — and back to the big screen. Every chapter, one story."
-            accentColor="#E9B96E"
+            accentColor="#AD761E"
           />
         </div>
 

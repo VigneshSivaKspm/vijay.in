@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { Activity } from 'lucide-react';
 import { filmmaker } from '../../data/filmmaker';
+import { useSiteMetrics } from '../../context/SiteMetricsContext';
+import AnimatedNumber from '../ui/AnimatedNumber';
 import MobileMenu from './MobileMenu';
 
 const navLinks = [
@@ -13,6 +16,7 @@ const Navbar: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
+  const { activitiesCount, isLive } = useSiteMetrics();
 
   useEffect(() => {
     let isScrolled = window.scrollY > 50;
@@ -84,8 +88,27 @@ const Navbar: React.FC = () => {
               ))}
             </ul>
 
-            {/* CTA + hamburger */}
-            <div className="flex items-center gap-4">
+            {/* Activities Counter + CTA + hamburger */}
+            <div className="flex items-center gap-3 md:gap-4">
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-charcoal/85 border border-ivory/10 backdrop-blur-sm shadow-sm"
+                title={isLive ? 'Live site activities synced with Firebase' : 'Live session activities'}
+                aria-label={`Total site activities: ${activitiesCount}`}
+              >
+                <span className="relative flex h-2 w-2 shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-teal" />
+                </span>
+                <Activity size={13} className="text-gold shrink-0" />
+                <AnimatedNumber
+                  value={activitiesCount}
+                  className="font-display text-sm md:text-base tracking-wider text-ivory leading-none"
+                />
+                <span className="hidden sm:inline font-body text-[10px] font-semibold tracking-[0.2em] uppercase text-silver/80">
+                  ACTIVITIES
+                </span>
+              </div>
+
               <Link
                 to="/contact"
                 className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 border border-gold/50 text-gold font-body font-semibold text-xs tracking-widest uppercase hover:bg-gold hover:text-cinemaBlack transition-all duration-300"

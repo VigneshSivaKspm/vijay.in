@@ -20,7 +20,7 @@ export const SITE = {
   company: 'Youpeak Tech',
   lang: 'en-IN',
   locale: 'en_IN',
-  themeColor: '#08080B',
+  themeColor: '#FAF9F6',
   ogImage: '/og-image.jpg',
   ogImageWidth: 1200,
   ogImageHeight: 630,
