@@ -24,7 +24,6 @@ const FrameCorners: React.FC = () => (
 const HeroSection: React.FC = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
   const rolesRef = useRef<HTMLDivElement>(null);
   const [currentRole, setCurrentRole] = useState(0);
 
@@ -48,17 +47,8 @@ const HeroSection: React.FC = () => {
       },
     });
 
-    // Entrance animation
-    const tl = gsap.timeline({ delay: 0.2 });
-    tl.fromTo(
-      contentRef.current,
-      { opacity: 0, y: 60 },
-      { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out' }
-    );
-
     return () => {
       st.kill();
-      tl.kill();
     };
   }, []);
 
@@ -99,9 +89,9 @@ const HeroSection: React.FC = () => {
       <FrameCorners />
 
       {/* Content */}
-      <div ref={contentRef} className="relative z-10 container-wide pt-28 pb-20 opacity-0">
+      <div className="relative z-10 container-wide pt-28 pb-20 animate-fade-up motion-reduce:animate-none">
         {/* Eyebrow */}
-        <p className="eyebrow mb-8 text-silver/60">
+        <p className="eyebrow mb-8 text-silver/80">
           YOUPEAK TECH&nbsp;&nbsp;•&nbsp;&nbsp;FILM
         </p>
 
@@ -246,6 +236,10 @@ const BioPreview: React.FC = () => {
               Read the Story
               <ArrowRight size={16} />
             </MagneticButton>
+            <MagneticButton href="/gallery" variant="ghost" className="ml-6">
+              View Gallery
+              <ArrowRight size={14} />
+            </MagneticButton>
           </div>
         </div>
       </div>
@@ -357,14 +351,14 @@ const CTASection: React.FC = () => {
 // ─── Full Home Page ───────────────────────────────────────────────────────────
 const Home: React.FC = () => {
   return (
-    <main>
+    <div>
       <HeroSection />
       <VisionSection />
       <BioPreview />
       <CareerTimeline />
       <PhilosophySection />
       <CTASection />
-    </main>
+    </div>
   );
 };
 

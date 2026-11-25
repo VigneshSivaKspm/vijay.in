@@ -54,6 +54,7 @@ const NAV = [
   ['/about', 'About'],
   ['/gallery', 'Gallery'],
   ['/contact', 'Contact'],
+  ['/privacy', 'Privacy'],
 ] as const;
 
 /**
@@ -88,7 +89,7 @@ const renderBody = (r: RouteSeo): string => {
     `<h1 style="font-weight:500;font-size:2.2rem;line-height:1.2">${esc(r.heading)}</h1>`,
     ...r.body.paragraphs.map((p) => `<p>${esc(p)}</p>`),
     lists,
-    `<footer><p>${esc(filmmaker.name)} · ${esc(filmmaker.location)} · <a href="mailto:${esc(filmmaker.email)}" style="${link}">${esc(filmmaker.email)}</a></p><p>${social}</p></footer>`,
+    `<footer><p>${esc(filmmaker.name)} · ${esc(filmmaker.location)} · <a href="mailto:${esc(filmmaker.email)}" style="${link}">${esc(filmmaker.email)}</a> · <a href="tel:${esc(filmmaker.phone.replace(/\s/g, ''))}" style="${link}">${esc(filmmaker.phone)}</a></p><p>${social}</p></footer>`,
     '</main>',
   ].join('');
 };

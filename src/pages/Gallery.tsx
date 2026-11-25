@@ -167,9 +167,9 @@ const Gallery: React.FC = () => {
                     </div>
 
                     <div>
-                      <h4 className="font-display text-xl text-ivory tracking-wide mb-1">
+                      <p className="font-display text-xl text-ivory tracking-wide mb-1">
                         {item.caption}
-                      </h4>
+                      </p>
                     </div>
                   </div>
                 </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Mail, MapPin, Send, CheckCircle } from 'lucide-react';
+import { Mail, MapPin, Send, CheckCircle, Phone, MessageCircle } from 'lucide-react';
 import { filmmaker } from '../data/filmmaker';
+import { trackEvent } from '../analytics/analytics';
 import { InstagramIcon, YoutubeIcon, LinkedinIcon, ImdbIcon } from '../components/ui/SocialIcons';
 import SectionHeading from '../components/ui/SectionHeading';
 
@@ -38,6 +39,7 @@ const Contact: React.FC = () => {
 — ${formData.fullName}
 ${formData.email}`;
     window.location.href = `mailto:${filmmaker.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    trackEvent('contact_form_submit', { page_path: '/contact' });
     setSubmitted(true);
   };
 
@@ -87,7 +89,7 @@ ${formData.email}`;
               Have a project, a partnership idea or a question? Send a message and start the conversation.
             </p>
             <div className="md:col-span-4 flex md:justify-end">
-              <span className="font-display text-xs tracking-widest text-silver/60 uppercase">
+              <span className="font-display text-xs tracking-widest text-silver/80 uppercase">
                 CHENNAI • INDIA
               </span>
             </div>
@@ -135,7 +137,7 @@ ${formData.email}`;
                     <Mail size={18} />
                   </div>
                   <div>
-                    <p className="eyebrow text-[10px] text-silver/60 uppercase mb-1">Electronic Inquiries</p>
+                    <p className="eyebrow text-[10px] text-silver/80 uppercase mb-1">Electronic Inquiries</p>
                     <a
                       href={`mailto:${filmmaker.email}`}
                       className="font-display text-xl text-ivory hover:text-gold transition-colors block"
@@ -145,12 +147,48 @@ ${formData.email}`;
                                       </div>
                 </div>
 
+                {filmmaker.phone && (
+                  <div className="p-6 bg-graphite border border-ivory/10 flex items-start gap-4">
+                    <div className="p-3 bg-cinemaBlack text-gold rounded-full shrink-0">
+                      <Phone size={18} />
+                    </div>
+                    <div>
+                      <p className="eyebrow text-[10px] text-silver/80 uppercase mb-1">Phone</p>
+                      <a
+                        href={`tel:${filmmaker.phone.replace(/\s/g, '')}`}
+                        className="font-display text-xl text-ivory hover:text-gold transition-colors block"
+                      >
+                        {filmmaker.phone}
+                      </a>
+                    </div>
+                  </div>
+                )}
+
+                {filmmaker.whatsapp && (
+                  <div className="p-6 bg-graphite border border-ivory/10 flex items-start gap-4">
+                    <div className="p-3 bg-cinemaBlack text-teal rounded-full shrink-0">
+                      <MessageCircle size={18} />
+                    </div>
+                    <div>
+                      <p className="eyebrow text-[10px] text-silver/80 uppercase mb-1">WhatsApp</p>
+                      <a
+                        href={`https://wa.me/${filmmaker.whatsapp}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-display text-xl text-ivory hover:text-gold transition-colors block"
+                      >
+                        Message on WhatsApp
+                      </a>
+                    </div>
+                  </div>
+                )}
+
                 <div className="p-6 bg-graphite border border-ivory/10 flex items-start gap-4">
                   <div className="p-3 bg-cinemaBlack text-teal rounded-full shrink-0">
                     <MapPin size={18} />
                   </div>
                   <div>
-                    <p className="eyebrow text-[10px] text-silver/60 uppercase mb-1">Based in</p>
+                    <p className="eyebrow text-[10px] text-silver/80 uppercase mb-1">Based in</p>
                     <p className="font-display text-xl text-ivory">{filmmaker.location}</p>
                   </div>
                 </div>
@@ -215,22 +253,22 @@ ${formData.email}`;
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="fullName" className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">Your Full Name *</label>
+                        <label htmlFor="fullName" className="block font-body text-xs text-silver/80 tracking-widest uppercase mb-2">Your Full Name *</label>
                         <input id="fullName" type="text" name="fullName" required value={formData.fullName} onChange={handleChange} className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors" />
                       </div>
                       <div>
-                        <label htmlFor="email" className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">Email Address *</label>
+                        <label htmlFor="email" className="block font-body text-xs text-silver/80 tracking-widest uppercase mb-2">Email Address *</label>
                         <input id="email" type="email" name="email" required value={formData.email} onChange={handleChange} className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors" />
                       </div>
                     </div>
 
                     <div>
-                      <label htmlFor="company" className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">Company (Optional)</label>
+                      <label htmlFor="company" className="block font-body text-xs text-silver/80 tracking-widest uppercase mb-2">Company (Optional)</label>
                       <input id="company" type="text" name="company" value={formData.company} onChange={handleChange} className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors" />
                     </div>
 
                     <div>
-                      <label htmlFor="message" className="block font-body text-xs text-silver/60 tracking-widest uppercase mb-2">Message *</label>
+                      <label htmlFor="message" className="block font-body text-xs text-silver/80 tracking-widest uppercase mb-2">Message *</label>
                       <textarea id="message" name="message" required rows={6} value={formData.message} onChange={handleChange} className="w-full bg-cinemaBlack/60 border border-ivory/15 focus:border-crimson px-4 py-3 font-body text-sm text-ivory placeholder:text-silver/30 outline-none transition-colors resize-none" />
                     </div>
 

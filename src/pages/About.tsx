@@ -5,6 +5,7 @@ import SectionHeading from '../components/ui/SectionHeading';
 import MagneticButton from '../components/ui/MagneticButton';
 import CareerTimeline from '../components/sections/CareerTimeline';
 import Picture from '../components/ui/Picture';
+import { faq } from '../data/faq';
 
 const About: React.FC = () => {
   return (
@@ -40,7 +41,7 @@ const About: React.FC = () => {
           </h1>
 
           <div className="border-t border-ivory/10 pt-8">
-            <p className="font-editorial text-2xl md:text-3xl text-ivory font-light italic leading-snug max-w-3xl">
+            <p className="font-caption text-3xl md:text-4xl text-ivory italic leading-snug max-w-3xl">
               {filmmaker.tagline}
             </p>
           </div>
@@ -61,7 +62,8 @@ const About: React.FC = () => {
                   width={1000}
                   height={1094}
                   className="w-full h-full object-cover object-top"
-                  loading="lazy"
+                  loading="eager"
+                  fetchPriority="high"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-cinemaBlack/80 via-transparent to-transparent" />
                 <div className="absolute bottom-6 left-6 right-6">
@@ -101,6 +103,30 @@ const About: React.FC = () => {
 
       {/* ─── Career Timeline ──────────────────────────────────────── */}
       <CareerTimeline />
+
+      {/* ─── FAQ (same data as the FAQPage structured data) ───────── */}
+      <section className="section-padding bg-charcoal" aria-labelledby="faq-heading">
+        <div className="container-wide max-w-3xl">
+          <div id="faq-heading">
+            <SectionHeading eyebrow="Quick answers" heading="FREQUENTLY ASKED QUESTIONS" accentColor="#E9B96E" className="mb-12" />
+          </div>
+          <div className="divide-y divide-ivory/10 border-y border-ivory/10">
+            {faq.map((item) => (
+              <details key={item.question} className="group py-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-display text-2xl text-ivory tracking-wide">
+                  <span>{item.question}</span>
+                  <span aria-hidden="true" className="text-gold transition-transform duration-300 group-open:rotate-45 text-3xl leading-none">+</span>
+                </summary>
+                <p className="body-text mt-4 max-w-2xl">{item.answer}</p>
+              </details>
+            ))}
+          </div>
+          <p className="body-text mt-10">
+            More questions? <a href="/contact" className="text-gold underline underline-offset-2 hover:text-ivory">Get in touch</a> or see the{' '}
+            <a href="/gallery" className="text-gold underline underline-offset-2 hover:text-ivory">photo gallery</a>.
+          </p>
+        </div>
+      </section>
     </>
   );
 };

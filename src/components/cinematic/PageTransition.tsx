@@ -34,7 +34,10 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
 
   return (
     <AnimatePresence mode="wait">
-      <motion.div
+      <motion.main
+        id="main-content"
+        tabIndex={-1}
+        className="outline-none"
         key={pathname}
         variants={pageVariants}
         initial="initial"
@@ -50,7 +53,7 @@ const PageTransition: React.FC<PageTransitionProps> = ({ children }) => {
           exit="exit"
         />
         {children}
-      </motion.div>
+      </motion.main>
     </AnimatePresence>
   );
 };

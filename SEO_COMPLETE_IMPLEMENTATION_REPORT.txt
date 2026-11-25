@@ -1,0 +1,694 @@
+
+================================================================================
+SEO COMPLETE IMPLEMENTATION REPORT
+vijaykrishnan.in  -  S Vijay Krishnan
+Prepared: 24 November 2026
+================================================================================
+
+STATUS KEY
+  COMPLETED               Done in the codebase and verified (how, is stated).
+  PARTIALLY COMPLETED     Done in part; the remainder is stated.
+  PENDING EXTERNAL ACTION Needs an account, permission or information only the
+                          site owner has.
+  NOT APPLICABLE          Does not fit this website.
+  NOT VERIFIED            Implemented but could not be tested here.
+
+NOTHING HAS BEEN COMMITTED OR DEPLOYED. All changes are uncommitted files in the
+working tree. Commit and deploy only when you are happy with them.
+
+
+--------------------------------------------------------------------------------
+1. EXECUTIVE SUMMARY
+--------------------------------------------------------------------------------
+vijaykrishnan.in is a small personal website (5 public pages) for S Vijay
+Krishnan: CEO of Youpeak Tech since 2023, film co-producer and chairman 2021-2023,
+launching a new movie in 2027. It is a React + Vite single-page app that was
+already pre-rendered at build time, so crawlers receive real HTML.
+
+What changed in this SEO pass:
+  * Performance: the home page went from 23.9 MB to about 1.3 MB transferred
+    (mobile), layout shift from 0.282 to 0, and home-page mobile LCP from 3.7 s to
+    0.8 s. Every page scores 100 for accessibility, best practices and SEO in
+    the lab. Only /contact misses the LCP target on mobile (3.2 s). Details and
+    caveats in section 19.
+  * Wrong information removed from search-facing assets: the social-share image
+    (og-image.jpg) still said "TAMIL FILM DIRECTOR & PRODUCER". It is regenerated.
+  * New structured data (FAQPage, AboutPage+ProfilePage, ImageGallery, ContactPage
+    with ContactPoint, Person with image and employer), an image sitemap, a real
+    Privacy Policy page, a factual FAQ, and hosting configuration (vercel.json)
+    for redirects, www/non-www, clean URLs and cache headers.
+  * Analytics, conversion and Core Web Vitals tracking is built in, but OFF until
+    you supply your own GA4 / GTM IDs.
+  * Fonts are self-hosted (no Google Fonts request), 5 unused dependencies removed.
+
+What was deliberately NOT done, and why (details in sections 9-11):
+  * No pages or claims for the 30+ cities in the brief. Nothing in the project or
+    in public search shows that Youpeak Tech or Vijay serves those places. The only
+    verified location is Chennai, Tamil Nadu, India. Publishing the others would be
+    exactly the kind of unverifiable claim this site has just been cleaned of.
+  * No competitor analysis, keyword volumes or ranking claims: no keyword tool
+    access, and a public search found no information on "Youpeak Tech".
+  * No fake reviews, ratings, addresses, branches or certifications.
+
+Rankings cannot be guaranteed. They depend on competition, authority, backlinks
+and ongoing work.
+
+
+--------------------------------------------------------------------------------
+2. WEBSITE AND BUSINESS OVERVIEW
+--------------------------------------------------------------------------------
+Type            Personal / professional profile site (not a services business).
+Stack           React 19, Vite 8, TypeScript, Tailwind 3, React Router 7,
+                GSAP, Framer Motion, Lenis. Build-time pre-render plugin
+                (vite-plugin-seo.ts) driven by src/seo/site.ts.
+Hosting         Appears to be Vercel (api/chat.ts is a Vercel function). A
+                vercel.json was ADDED. Not tested on the live host.
+Verified facts  Name S Vijay Krishnan; CEO of Youpeak Tech since 2023;
+                film co-producer and chairman 2021-2023; new movie launching 2027;
+                based in Chennai, Tamil Nadu, India (kept from the original site;
+                please confirm).
+Unverified      contact@vijaykrishnan.in was a built-in default; confirm it is a
+                real, monitored inbox.
+Public pages    /  /about  /gallery  /contact  /privacy      (+ 404 page)
+Other           AI chat assistant (api/chat.ts, uses Groq), not indexable.
+Search visibility of the business: a public web search for "Youpeak Tech" found no
+page describing the company. Its web presence (website, LinkedIn page) is the
+single biggest off-site gap for entity SEO. See sections 22 and 32.
+
+
+--------------------------------------------------------------------------------
+3. INITIAL AUDIT FINDINGS (before this pass)
+--------------------------------------------------------------------------------
+Measured with a Lighthouse lab run (mobile, simulated slow 4G, 4x CPU
+slowdown) on the home page of a local production build, before any change:
+  Performance 50 | Accessibility 96 | Best practices 100 | SEO 100
+  LCP 3.7 s | CLS 0.282 | TBT 980 ms | 23,956 KiB transferred
+(Only the home page was baselined; other pages had no "before" run.)
+
+Findings:
+  F1  Bio photo slider offered the 800-900 KB PNG of each portrait first and
+      preloaded all 20, about 17 MB for one section.
+  F2  Layout shift 0.28: hero heading moved when the web font swapped in.
+  F3  og-image.jpg (shown on every social share) said "Tamil film director &
+      producer" - wrong information.
+  F4  No vercel.json: no redirects, no www/non-www rule, no cache headers on
+      Vercel (public/_headers is ignored by Vercel).
+  F5  Only the home page had a <main> landmark; no skip link.
+  F6  5 npm dependencies never imported (three, @react-three/fiber, drei,
+      @types/three, @gsap/react).
+  F7  Low colour contrast: primary buttons (3.19:1) and small grey text.
+  F8  No FAQ, no Privacy Policy, no image sitemap, thin Contact/Gallery titles.
+  F9  Google Fonts: third-party render-blocking request.
+  F10 Hero text hidden until a JavaScript animation ran (delayed LCP).
+  F11 Contact form faked a "sent" confirmation (fixed in the previous task).
+  F12 Preloaded fonts folder from an interrupted session was zero-filled (see
+      section 28, incident note).
+
+
+--------------------------------------------------------------------------------
+4. ISSUES IDENTIFIED AND RESOLVED
+--------------------------------------------------------------------------------
+F1  COMPLETED   AVIF/WebP at 480/720/800/1000 px with JPEG fallback (<Picture>).
+F2  COMPLETED   Fonts self-hosted + preloaded; CLS 0 on every page measured.
+F3  COMPLETED   og-image.jpg regenerated (1200x630, photo + correct role).
+F4  COMPLETED   vercel.json (NOT VERIFIED on the live host).
+F5  COMPLETED   <main id="main-content"> on every page; skip link.
+F6  COMPLETED   Dependencies removed; web-vitals added (used only when analytics on).
+F7  COMPLETED   Primary button #CF1B3E (4.7:1); small text raised to /80 opacity;
+                decorative footer watermark changed to outline text.
+F8  COMPLETED   See sections 13, 14, 16.
+F9  COMPLETED   4 woff2 files in public/fonts, @font-face in src/index.css.
+F10 COMPLETED   Hero uses a CSS entrance animation, not a JS tween; all pages
+                bundled (no lazy-route round trip).
+F12 COMPLETED   Files rebuilt; see section 28.
+
+
+--------------------------------------------------------------------------------
+5. COMPLETE SEO IMPLEMENTATION SUMMARY (by type)
+--------------------------------------------------------------------------------
+Technical SEO ................ COMPLETED (host-side parts NOT VERIFIED)
+On-page SEO .................. COMPLETED
+Off-page SEO strategy ........ COMPLETED as a plan; execution PENDING EXTERNAL ACTION
+Local SEO .................... PARTIALLY COMPLETED (Chennai only; see 21)
+National SEO ................. COMPLETED (India: en-IN, hreflang, schema nationality)
+State / district / city SEO .. PARTIALLY COMPLETED - Tamil Nadu/Chennai only;
+                               all other locations PENDING EXTERNAL ACTION
+                               (owner must confirm real coverage). No location
+                               pages created, as instructed.
+Hyperlocal SEO ............... NOT APPLICABLE (no verified local premises)
+Semantic / content SEO ....... COMPLETED within existing pages
+Image SEO .................... COMPLETED
+Video SEO .................... NOT APPLICABLE (no video on the site; the stock
+                               showreel was removed in the previous task)
+Mobile SEO ................... COMPLETED (Lighthouse mobile emulation; NOT tested
+                               on physical devices)
+JavaScript SEO ............... COMPLETED (build-time pre-render, section 12)
+Core Web Vitals .............. PARTIALLY COMPLETED (section 19)
+Entity-based SEO ............. COMPLETED in code; external profiles PENDING
+E-E-A-T ...................... PARTIALLY COMPLETED (nothing fabricated)
+Conversion-oriented SEO ...... COMPLETED (tracking PENDING EXTERNAL ACTION)
+Programmatic SEO ............. NOT APPLICABLE (no repeatable page type that
+                               would be non-thin)
+Voice search / AEO / GEO ..... COMPLETED (FAQ + schema + llms.txt, experimental)
+International SEO ............ NOT APPLICABLE (single en-IN site)
+
+
+--------------------------------------------------------------------------------
+6. PAGE-BY-PAGE DETAILS AND 7. TITLES / META DESCRIPTIONS
+--------------------------------------------------------------------------------
+(Source of truth: src/seo/site.ts. Lengths include the visible characters.)
+
+/            Title: S Vijay Krishnan - CEO of Youpeak Tech & Film Producer  (54)
+             Desc : Official website of S Vijay Krishnan, CEO of Youpeak Tech and
+                    film producer. His journey from film chairman to CEO, and his
+                    new movie in 2027.  (142)
+             Intent: brand / navigational + "who is".  H1: one.  Schema: WebPage,
+                    Person, Organization, WebSite.  Image sitemap: og-image.jpg.
+/about       Title: About S Vijay Krishnan - CEO of Youpeak Tech  (44)
+             Desc : About S Vijay Krishnan: CEO of Youpeak Tech since 2023, film
+                    co-producer and chairman from 2021 to 2023, and launching a
+                    new movie in 2027.  (139)
+             Intent: informational ("who is S Vijay Krishnan"). Visible FAQ (6 Q&As)
+                    + FAQPage schema from the same data (src/data/faq.ts).
+                    Schema: AboutPage+ProfilePage, FAQPage, BreadcrumbList.
+/gallery     Title: Photo Gallery - S Vijay Krishnan, CEO & Film Producer  (53)
+             Desc : Photos of S Vijay Krishnan, CEO of Youpeak Tech, across his
+                    career as a film producer, chairman and chief executive.  (116)
+             Intent: image search. Schema: ImageGallery with 12 ImageObjects
+                    (contentUrl, caption). 12 images in the image sitemap.
+/contact     Title: Contact S Vijay Krishnan - CEO of Youpeak Tech  (46)
+             Desc : Get in touch with S Vijay Krishnan, CEO of Youpeak Tech and
+                    film producer, for partnerships, press and enquiries.  (113)
+             Intent: transactional/contact. Schema: ContactPage + ContactPoint.
+/privacy     Title: Privacy Policy | S Vijay Krishnan  (33)
+             Desc : How vijaykrishnan.in handles your information: the contact
+                    form, the AI chat assistant, analytics and browser storage. (118)
+             Intent: trust page. Priority 0.3.
+/404         noindex, nofollow. Unknown paths show the 404 page with the same
+             noindex at runtime (verified in a browser).
+
+Automated check of the built HTML (all 5 pages + 404): unique titles (<=65 chars),
+unique descriptions (70-165 chars), canonical = own URL, one H1 each, JSON-LD
+parses, no internal link points to a missing page, every sitemap URL and sitemap
+image exists, fonts exist: ALL CHECKS PASSED.
+
+
+--------------------------------------------------------------------------------
+8. KEYWORD STRATEGY AND MAPPING
+--------------------------------------------------------------------------------
+IMPORTANT: these are PROPOSED targets. No search volumes, difficulty or ranking
+data were available; none are claimed. Validate in Google Search Console and a
+keyword tool before investing in content.
+
+Brand (own the results page for the name)
+  "S Vijay Krishnan", "Vijay Krishnan", "S Vijay Krishnan CEO",
+  "S Vijay Krishnan Youpeak Tech", "Vijay Krishnan Chennai"
+     -> Home (primary), About (secondary).
+  Caution: "Vijay Krishnan" is a common name; disambiguation relies on
+  "Youpeak Tech", "CEO" and "S" in titles and schema (done).
+Company
+  "Youpeak Tech", "Youpeak Tech CEO"
+     -> Home + About. A dedicated Youpeak Tech website/LinkedIn page is needed
+        for these to rank (external).
+Informational / question (AEO)
+  "who is S Vijay Krishnan", "what does S Vijay Krishnan do",
+  "S Vijay Krishnan new movie 2027", "where is S Vijay Krishnan from"
+     -> About (FAQ answers these directly).
+Image
+  "S Vijay Krishnan photos"     -> Gallery.
+Contact
+  "contact S Vijay Krishnan"    -> Contact.
+Film
+  "S Vijay Krishnan film producer" -> Home/About. Do NOT target "director" or
+  film titles: none are verified.
+Cannibalisation control: each keyword family maps to ONE page (above).
+Not targeted: generic "film producer in Chennai" style commercial terms, because
+the site offers no service to buy; targeting them would mislead searchers.
+
+
+--------------------------------------------------------------------------------
+9. GEOGRAPHICAL TARGETING - WHAT WAS AND WAS NOT DONE
+--------------------------------------------------------------------------------
+Per the brief: no state, district, city or location pages or routes were created,
+and none will be without confirmation.
+
+PUBLISHED (verified by the original site and kept):
+  India  >  Tamil Nadu  >  Chennai
+  - Person.homeLocation (Chennai, Tamil Nadu, IN) in JSON-LD
+  - "Chennai, Tamil Nadu, India" in footer, Contact page, About page text
+  - <html lang="en-IN">, og:locale en_IN, hreflang en-IN
+
+NOT PUBLISHED - PENDING EXTERNAL ACTION (needs the owner to confirm real coverage):
+  Tamil Nadu ......... Coimbatore, Tiruppur, Tiruchirappalli (Trichy), Madurai
+  Karnataka .......... Bengaluru, Mangaluru, Mysuru
+  Kerala ............. Palakkad
+  Delhi NCR .......... New Delhi, Dwarka, Rohini, Janakpuri
+  Maharashtra ........ Mumbai, Navi Mumbai, Thane, Andheri
+  Telangana .......... Hyderabad, Secunderabad, Gachibowli, Kukatpally
+  Gujarat ............ Ahmedabad, Surat, Vadodara
+  Haryana ............ Yamunanagar, Ambala, Karnal, Gurugram
+  Chandigarh ......... Chandigarh
+  Uttar Pradesh ...... Mathura, Vrindavan, Lucknow
+  Rajasthan .......... Jaipur
+  Madhya Pradesh ..... Indore, Bhopal, Jabalpur, Gwalior
+Reason: this is a personal profile site and nothing verifies that Vijay or Youpeak
+Tech serves these places. A person is not a "service area business".
+
+HOW TO ADD IT LATER, if Youpeak Tech does serve them (no new pages needed):
+  1. Tell me the real service list and cities/states.
+  2. Add an Organization node for Youpeak Tech with "areaServed" listing only
+     those places (src/seo/site.ts, globalGraph).
+  3. Add one natural "Where we work" paragraph to /about and/or /contact, and
+     one location-aware FAQ in src/data/faq.ts (it feeds both page and schema).
+  4. Do not repeat every location on every page.
+
+
+--------------------------------------------------------------------------------
+10. TECHNICAL SEO
+--------------------------------------------------------------------------------
+Sitemap ........ COMPLETED  /sitemap.xml generated at build (5 URLs, lastmod
+                 2026-11-24, image:image entries for /, /about, /gallery).
+                 Excludes 404 and /api. A sitemap index is NOT APPLICABLE (5 URLs).
+robots.txt ..... COMPLETED  Allow all, Disallow /api/, Sitemap line. AI search
+                 crawlers are allowed; opt-out instructions are in the file.
+Canonicals ..... COMPLETED  One per page, verified equal to the page URL.
+Indexability ... COMPLETED  404 is noindex; /api/* sends X-Robots-Tag noindex
+                 (vercel.json). No admin/auth pages exist.
+Redirects ...... COMPLETED in vercel.json, NOT VERIFIED on live host:
+                   www.vijaykrishnan.in/*  -> https://vijaykrishnan.in/*  (301)
+                   /index.html             -> /
+                   /filmography, /films/*, /press-awards, /production,
+                   /creative-vision        -> /about   (301)
+                 The five removed sections were deleted because they contained
+                 invented content. They are redirected to /about so old links and
+                 indexed URLs resolve to relevant true content. If you prefer them
+                 to return 404 (clean removal), delete those 5 lines.
+URL hygiene .... COMPLETED  "cleanUrls": true, "trailingSlash": false.
+HTTPS/HSTS ..... COMPLETED  Strict-Transport-Security header (vercel.json).
+HTTP status .... NOT VERIFIED on live host (local preview returned 200 for all 5
+                 pages; unknown paths serve the noindex 404 page).
+Broken links ... COMPLETED  Automated scan: zero broken internal links.
+Orphan pages ... COMPLETED  Every page is linked from header/footer.
+Crawl depth .... All pages within 1 click of Home.
+Pagination/URL parameters .. NOT APPLICABLE.
+Security headers COMPLETED  nosniff, Referrer-Policy, X-Frame-Options,
+                 Permissions-Policy. A Content-Security-Policy was NOT added
+                 (risk of breaking analytics/chat without live testing).
+
+
+--------------------------------------------------------------------------------
+11. STRUCTURED DATA (JSON-LD)
+--------------------------------------------------------------------------------
+Global graph (every page): Person (name, jobTitle "Chief Executive Officer",
+image, Chennai address, worksFor, sameAs only if real profile URLs are configured),
+Organization (Youpeak Tech - name only; no invented address/URL), WebSite.
+Per page: WebPage (/), AboutPage+ProfilePage + FAQPage (/about), ImageGallery with
+ImageObjects (/gallery), ContactPage + ContactPoint (/contact), WebPage (/privacy),
+BreadcrumbList on every non-home page.
+Schema types from the brief that were NOT used, because they do not fit and would
+be misleading: LocalBusiness, ProfessionalService, Service, Product, Offer,
+Article/BlogPosting, VideoObject, AggregateRating/Review.
+Validation: every block parses as JSON and relationships (@id references) resolve
+within the page. NOT VERIFIED with Google's Rich Results Test or schema.org
+validator (needs the live URL). Google now shows FAQ rich results only for a few
+site types, so the FAQPage markup helps machine understanding, not a guaranteed
+rich result.
+
+
+--------------------------------------------------------------------------------
+12. JAVASCRIPT / RENDERING SEO
+--------------------------------------------------------------------------------
+COMPLETED. Each route is pre-rendered at build to its own HTML file (head tags,
+JSON-LD and a crawlable text fallback), and React keeps the head in sync on
+navigation (src/seo/useSeo.ts). Non-JavaScript crawlers see real content. The
+static fallback is hidden from sighted visitors until React mounts (not cloaking:
+same content, available via <noscript> and to crawlers).
+Verified: dist/<route>/index.html exists for / /about /gallery /contact /privacy
+and 404.html, each with its own title, description, canonical and JSON-LD.
+
+
+--------------------------------------------------------------------------------
+13. INTERNAL LINKING
+--------------------------------------------------------------------------------
+Header, mobile menu and footer link to all main pages; footer links to Privacy.
+Added: Home bio -> Gallery; About FAQ -> Contact and Gallery; skip-to-content link.
+Descriptive anchor text used throughout.
+
+
+--------------------------------------------------------------------------------
+14. CONTENT AND SEMANTIC SEO
+--------------------------------------------------------------------------------
+Added a 6-question factual FAQ on /about (answers contain only verified facts).
+Rewrote nothing to add facts that are not true. Unverified marketing copy was
+already removed in the previous task. Pillar/cluster content and articles are
+NOT created: there is no verified subject matter to write about yet.
+Recommended content (needs real information from the owner): a page or posts on
+Youpeak Tech's products/services, the 2027 movie when details are public, press
+mentions, a real "journey" write-up with dates and sources.
+
+
+--------------------------------------------------------------------------------
+15. IMAGE AND MULTIMEDIA SEO
+--------------------------------------------------------------------------------
+COMPLETED
+  * 12 gallery/timeline photos + 20 bio portraits: AVIF + WebP at several widths,
+    JPEG fallback; explicit width/height (no layout shift); responsive `sizes`.
+  * Lazy loading for off-screen images; the About portrait (LCP candidate) is
+    eager with fetchpriority=high; first 3 gallery images eager.
+  * Descriptive alt text on every photo; decorative thumbnails use empty alt.
+  * Descriptive filenames (ceo-01.jpg, chairman-03.jpg ...).
+  * Logo as 112/224 px WebP instead of 55 KB PNGs.
+  * Social image regenerated (79 KB). Image sitemap added.
+Note: the original PNGs in public/images/vijay (about 21 MB) are no longer used
+by the site but still ship in the deployment. Delete them when you are ready.
+The "chairman" photos have filenames starting "ChatGPT Image"; confirm you are
+comfortable presenting them as photographs.
+
+
+--------------------------------------------------------------------------------
+16. MOBILE SEO AND ACCESSIBILITY
+--------------------------------------------------------------------------------
+Mobile-first: responsive layout, viewport meta, no horizontal overflow (checked
+at 390 px earlier in this project), tap targets standard.
+Accessibility (Lighthouse): 100 on every page measured. Fixes: <main> landmark, skip link, contrast,
+heading order on Gallery, underlined in-text links, labelled form fields
+(label/for), FAQ built from <details>/<summary>, prefers-reduced-motion respected.
+NOT done: a screen-reader or keyboard-only manual test.
+
+
+--------------------------------------------------------------------------------
+17. AI SEARCH, AEO AND GEO
+--------------------------------------------------------------------------------
+COMPLETED: direct factual answers (FAQ) mirrored in FAQPage schema; consistent
+entity data (same name, role, employer, city in every schema block and visible
+text); descriptive headings; extractable timeline text on Home and About.
+public/llms.txt updated to the new facts. It is optional and experimental, not a
+ranking factor. robots.txt allows search and AI crawlers; edit to opt out.
+No inclusion in any AI answer is guaranteed. These systems weigh how widely a
+name is mentioned across the web, which needs the external work in section 22.
+
+
+--------------------------------------------------------------------------------
+18. ANALYTICS AND CONVERSION TRACKING
+--------------------------------------------------------------------------------
+IMPLEMENTED (src/analytics/analytics.ts), OFF until IDs are provided:
+  .env / Vercel variables:  VITE_GA4_ID   (G-XXXXXXXXXX)
+                            VITE_GTM_ID   (GTM-XXXXXXX; if set, events go via GTM)
+                            VITE_WHATSAPP_NUMBER, VITE_CONTACT_PHONE (optional)
+                            VITE_GOOGLE_SITE_VERIFICATION, VITE_BING_SITE_VERIFICATION
+  Events: page_view (every route change), contact_form_submit, email_click,
+          phone_click, whatsapp_click, social_click, web_vitals (LCP, CLS, INP).
+Privacy: loads only after first paint; skipped when "Do Not Track" is on; ad
+storage always denied (Consent Mode). The Privacy page discloses this.
+NOT included: a cookie-consent banner. If you serve visitors in the EU/UK, add
+one before enabling analytics.
+Verified: with no ID set, no tracking script loads (tested in a browser). NOT
+VERIFIED: events arriving in GA4 (needs your property).
+Search Console and Bing Webmaster Tools: PENDING EXTERNAL ACTION (section 30).
+Phone and WhatsApp buttons appear on /contact only when you set real numbers; none
+were invented.
+
+
+--------------------------------------------------------------------------------
+19. PERFORMANCE AND CORE WEB VITALS
+--------------------------------------------------------------------------------
+Method: Lighthouse (lab) against a local production build (vite preview), headless
+Chrome, mobile = simulated slow 4G + 4x CPU slowdown, desktop = fast profile. Each
+page run in a separate process on an otherwise idle machine, one run per page.
+These are LAB numbers, not field data, and they vary between runs (home TBT moved
+between 150 and 470 ms on identical code). They exclude the first-visit intro
+animation, which Lighthouse skips (the site hides it from audit tools): a real
+first-time visitor sees that intro before the content.
+
+BEFORE (home, mobile)  Perf 50 | A11y 96 | BP 100 | SEO 100
+                       LCP 3.7 s | CLS 0.282 | TBT 980 ms | 23,956 KiB
+
+AFTER (final build)
+  Page (device)        Perf  A11y  BP   SEO   LCP    CLS   TBT     Transferred
+  Home (mobile)         97   100   100  100   0.8 s  0     200 ms  1,282 KiB
+  About (mobile)        95   100   100  100   2.1 s  0     150 ms    936 KiB
+  Gallery (mobile)      95   100   100  100   2.2 s  0     110 ms    629 KiB
+  Contact (mobile)      92   100   100  100   3.2 s  0     120 ms    386 KiB
+  Privacy (mobile)      98   100   100  100   0.8 s  0     140 ms    386 KiB
+  Home (desktop)        99   100   100  100   0.5 s  0      50 ms    921 KiB
+
+  An earlier run of the same pages, before the last fixes, scored lower on the
+  inner pages (mobile LCP 3.4-4.5 s, performance 72-90). The fixes were: bundling
+  all pages (removes a lazy-load round trip), loading the About portrait eagerly
+  with high priority, and a CSS (not JavaScript) hero entrance. Run-to-run
+  variation is real: home TBT measured 150, 470 and 200 ms on near-identical code.
+
+Targets: LCP <= 2.5 s, INP <= 200 ms, CLS <= 0.1.
+  CLS  ............ met on every page measured (0).
+  LCP  ............ met on Home, About, Gallery, Privacy and desktop Home.
+                    NOT MET on /contact (mobile, 3.2 s). Cause not isolated.
+                    Likely the large heading text waiting on its web font.
+  INP  ............ NOT MEASURED (needs real interaction/field data; the
+                    web_vitals event will report it once analytics is on).
+Lighthouse SEO 100 and Best Practices 100 on every page measured.
+Remaining known cost: about 190 KB (gzip ~108 KB) of main JavaScript, mostly
+GSAP/Framer Motion/Lenis animation libraries (about half reported as unused on
+first load). Removing it would mean redesigning the animations, which was out of
+scope.
+
+
+--------------------------------------------------------------------------------
+20. (Reserved - AI search covered in section 17)
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+21. LOCAL SEO
+--------------------------------------------------------------------------------
+COMPLETED: consistent name and city across pages and schema; no street address,
+phone or branch published (none verified).
+Google Business Profile: NOT APPLICABLE unless Youpeak Tech (or Vijay) has a real
+customer-facing premises or service-area business. Do not create one otherwise
+(it risks suspension). If Youpeak Tech does, create it under the company name with
+a verified address and category, add the website, hours, photos; the same details
+in Bing Places. NAP (name, address, phone) must then match the website exactly.
+Citations, reviews, Maps embed: PENDING EXTERNAL ACTION and only for real,
+verifiable business premises. No reviews or ratings are marked up.
+
+
+--------------------------------------------------------------------------------
+22. OFF-PAGE STRATEGY (ALL PENDING EXTERNAL ACTION)
+--------------------------------------------------------------------------------
+Priorities, highest value first:
+  1. Entity profiles with identical name/role/employer/photo: LinkedIn (personal
+     and a Youpeak Tech company page), IMDb if there are film credits, Crunchbase /
+     company directory listing for Youpeak Tech. Then add the URLs to .env
+     (VITE_SOCIAL_*) so they appear on the site and in sameAs.
+  2. A real website or page for Youpeak Tech, linking to Vijay's site and back.
+  3. Press and digital PR: announce the 2027 movie when details exist; interviews
+     and guest articles in industry media; ask partners and portals that mention
+     him to link to vijaykrishnan.in.
+  4. Wikipedia/Wikidata only if notability criteria are genuinely met (do not
+     self-write promotional entries).
+  5. Genuine testimonials from real colleagues/partners, with permission.
+Avoid: paid links, directory spam, link networks, fake reviews.
+Not done: backlink audit, because no backlink tool/data was available.
+
+
+--------------------------------------------------------------------------------
+23. COMPETITOR ANALYSIS
+--------------------------------------------------------------------------------
+NOT VERIFIED / NOT DONE. A public web search for "Youpeak Tech" returned no
+page for the company (only similarly named, unrelated firms), and no SEO tooling
+was available to pull competitor keyword or backlink data. Nothing was invented.
+To do this properly, provide Youpeak Tech's industry and website, then run the
+competitor set through Search Console + a keyword/backlink tool.
+
+
+--------------------------------------------------------------------------------
+24. ANALYTICS AND CONVERSION - see section 18.
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+25. FILES CREATED AND MODIFIED (this SEO pass; cumulative with the earlier
+    cleanup work where noted)
+--------------------------------------------------------------------------------
+CREATED
+  vercel.json
+  SEO_COMPLETE_IMPLEMENTATION_REPORT.txt
+  src/analytics/analytics.ts
+  src/components/ui/Picture.tsx
+  src/utils/images.ts
+  src/data/faq.ts
+  src/pages/Privacy.tsx
+  public/fonts/BebasNeue-normal-400.woff2
+  public/fonts/CormorantGaramond-normal-400.woff2
+  public/fonts/CormorantGaramond-italic-400.woff2
+  public/fonts/Manrope-normal-300-700.woff2
+  public/logo/vk-112.webp, public/logo/vk-224.webp
+  public/ceo|chairman|producer/*-{480,720,800,1000}.{avif,webp}  (12 photos)
+  public/images/vijay/vijay-NN-{480,720}.{avif,webp}              (20 portraits)
+MODIFIED
+  index.html (self-hosted font preloads, keywords, removed Google Fonts/Unsplash
+    preconnects and the 192 px icon link)
+  src/index.css (@font-face, accessible button colour)
+  src/seo/site.ts (routes, FAQ/Image/Contact/About schema, image sitemap)
+  vite-plugin-seo.ts (nav fallback, empty social links)
+  src/App.tsx (eager pages, skip link, analytics hooks)
+  src/components/cinematic/PageTransition.tsx (<main> landmark)
+  src/components/common/Footer.tsx, navigation/Navbar.tsx, navigation/MobileMenu.tsx
+  src/components/ui/PortraitSlider.tsx, TimelineGallery.tsx
+  src/pages/Home.tsx, About.tsx, Gallery.tsx, Contact.tsx, NotFound.tsx
+  src/data/filmmaker.ts, portraits.ts, gallery.ts, timeline.ts
+  public/og-image.jpg (regenerated), robots.txt, llms.txt, _headers,
+    manifest.webmanifest, site.webmanifest
+  .env.example (analytics, WhatsApp, phone placeholders)
+  package.json / package-lock.json (removed 5 unused packages, added web-vitals)
+  vite.config.ts (removed a dead three.js chunk rule)
+REMOVED (earlier task, for wrong information): Filmography, Film detail, Press &
+  Awards, Production and Creative Vision pages, and their data files.
+
+
+--------------------------------------------------------------------------------
+26. BEFORE / AFTER COMPARISON (home page, mobile lab)
+--------------------------------------------------------------------------------
+                    BEFORE        AFTER
+  Performance       50            97
+  LCP               3.7 s         0.8 s
+  CLS               0.282         0
+  TBT               980 ms        200 ms (varied 150-470 ms across runs)
+  Accessibility     96            100
+  Transferred       23,956 KiB    about 1,280 KiB
+  Public pages      4             5 (+ Privacy)
+  Schema types      3             up to 7 (adds FAQPage, AboutPage, ImageGallery,
+                                  ContactPage/ContactPoint, ImageObject)
+  Share image text  wrong role    correct
+  Google Fonts req. yes           none (self-hosted)
+
+
+--------------------------------------------------------------------------------
+27. TESTING AND VALIDATION RESULTS
+--------------------------------------------------------------------------------
+  Production build (npm run build) ............ PASSED (5 routes + 404 + sitemap)
+  TypeScript (tsc -b) ......................... PASSED, no errors
+  Linting (oxlint) ............................ PASSED: 0 errors. Older warnings
+                                                 remain in files such as Gallery,
+                                                 Navbar, Home; none in new files.
+  Existing automated tests .................... NONE EXIST in the project.
+  Built-HTML validation script ................ ALL CHECKS PASSED
+  Browser functional test (headless Chrome) ... PASSED: contact form shows the
+      "check your email app" state and a mailto link; FAQ opens; gallery filter
+      (CEO -> 4 photos), lightbox open and Escape close; AVIF <picture> in use;
+      all images have width/height; unknown URL -> noindex 404 page; home has one
+      <main>, skip link, canonical, no analytics script without an ID;
+      zero console or network errors.
+  Lighthouse lab runs ......................... PASSED except /contact LCP (3.2 s).
+  NOT TESTED: live-host redirects/headers, Rich Results Test, Search Console,
+  physical mobile devices, Safari/Firefox, screen reader, GA4 event delivery.
+
+
+--------------------------------------------------------------------------------
+28. REMAINING ISSUES, LIMITATIONS AND AN INCIDENT NOTE
+--------------------------------------------------------------------------------
+  * Mobile LCP on /contact (3.2 s) is above the 2.5 s target.
+  * Animation libraries dominate remaining JavaScript cost.
+  * The first-visit preloader intro is not in lab numbers and delays real first
+    visits; consider shortening it (it is skipped for crawlers).
+  * Unused 21 MB of PNG portraits still deployed (section 15).
+  * Contact form opens the visitor's email app; it does not send by itself. A
+    server-side form service would raise conversion; it needs a provider account.
+  * Youpeak Tech has no verifiable web presence, limiting entity SEO.
+
+  DATA-LOSS INCIDENT: this session was interrupted while files were being written.
+  Six source files were left zero-filled on disk: index.html, src/index.css,
+  Footer.tsx, Navbar.tsx, MobileMenu.tsx, Privacy.tsx. Five font files were also
+  empty and were re-downloaded and verified as real WOFF2. A commit named
+  "updation" (d7c34ba, 24 Nov 17:14) captured those empty files. They have been
+  rebuilt from the previous commit plus the known edits, then re-tested; a scan of
+  the whole project found no other damaged files. The rebuilt files are NOT
+  committed. Please review and commit them; until then the latest commit contains
+  empty versions of those files.
+
+
+--------------------------------------------------------------------------------
+29. PENDING EXTERNAL ACCOUNT CONFIGURATION (checklist)
+--------------------------------------------------------------------------------
+  [ ] Confirm contact@vijaykrishnan.in is a real inbox (or set VITE_CONTACT_EMAIL)
+  [ ] Confirm Chennai as base location
+  [ ] Decide whether the 5 old URLs redirect to /about (current) or return 404
+  [ ] Vercel: clear/replace any VITE_SOCIAL_* and VITE_CONTACT_PHONE values still
+      set there; make vijaykrishnan.in the primary domain, www redirecting to it
+  [ ] Create GA4 property and/or GTM container, set VITE_GA4_ID / VITE_GTM_ID
+  [ ] Provide real social profile URLs, phone, WhatsApp if wanted
+  [ ] Confirm which cities/states Youpeak Tech serves (section 9)
+
+
+--------------------------------------------------------------------------------
+30. GOOGLE SEARCH CONSOLE / BING SUBMISSION
+--------------------------------------------------------------------------------
+  1. search.google.com/search-console > Add property > Domain: vijaykrishnan.in
+     (DNS TXT verification) or URL-prefix with the HTML tag; paste the content
+     value into VITE_GOOGLE_SITE_VERIFICATION and redeploy if using the tag.
+  2. Sitemaps > submit https://vijaykrishnan.in/sitemap.xml.
+  3. URL Inspection > request indexing for /, /about, /gallery, /contact.
+  4. Watch Pages, Core Web Vitals and Performance reports weekly.
+  5. Bing Webmaster Tools: import from Search Console, or verify with
+     VITE_BING_SITE_VERIFICATION, and submit the same sitemap.
+  6. After deploy, test with Rich Results Test and PageSpeed Insights on the live URL.
+
+
+--------------------------------------------------------------------------------
+31. GOOGLE BUSINESS PROFILE
+--------------------------------------------------------------------------------
+See section 21. Only if Youpeak Tech has a real, verifiable premises or service
+area. Not recommended for a personal profile site.
+
+
+--------------------------------------------------------------------------------
+32. BACKLINK AND AUTHORITY ROADMAP - see section 22.
+--------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+33. ACTION PLANS
+--------------------------------------------------------------------------------
+30 DAYS
+  - Commit and deploy these changes after review; verify redirects and headers
+    on the live site.
+  - Complete section 29 checklist; verify Search Console and Bing; submit sitemap.
+  - Create/standardise LinkedIn (person + Youpeak Tech) and other real profiles;
+    add them to .env.
+  - Enable GA4/GTM; confirm contact_form_submit and email_click events arrive.
+60 DAYS
+  - Build a real Youpeak Tech web page/site and cross-link.
+  - Publish verifiable content: company description, services, press items,
+    movie announcement when available. Update FAQ accordingly.
+  - Review Search Console queries; adjust titles/FAQs to real queries.
+  - Decide on the geographic expansion (section 9) using confirmed coverage.
+  - Shorten the intro preloader; consider a server-side contact form.
+90 DAYS
+  - Digital PR for the 2027 movie; pursue quality backlinks and press mentions.
+  - Evaluate field Core Web Vitals (CrUX/GA4 web_vitals) and optimise.
+  - Add a cookie-consent banner if EU/UK traffic appears.
+  - Review keyword mapping with real volume data.
+
+
+--------------------------------------------------------------------------------
+34. LONG-TERM MAINTENANCE
+--------------------------------------------------------------------------------
+  * Keep facts only in src/data/filmmaker.ts, timeline.ts and faq.ts; the pages,
+    schema, sitemap and chat knowledge (api/_chatKnowledge.ts) must be updated
+    together when facts change. Bump SITE.lastModified in src/seo/site.ts.
+  * Monthly: Search Console coverage and CWV, broken links, Lighthouse run.
+  * Quarterly: refresh the FAQ and timeline, review profiles for consistency.
+  * Add new images with `-480/-800/-1000` AVIF/WebP variants (see src/utils/images.ts).
+  * Never add awards, titles, statistics or locations that cannot be verified.
+
+
+--------------------------------------------------------------------------------
+35. FINAL IMPLEMENTATION STATUS
+--------------------------------------------------------------------------------
+Technical, on-page, image, structured-data, performance, accessibility, AI-search
+and analytics-readiness work: COMPLETED in the codebase.
+Mobile LCP: met on 4 of 5 pages; /contact (3.2 s) PARTIALLY COMPLETED.
+Geographic expansion, competitor analysis, keyword volumes, local listings, backlinks,
+live-host verification, analytics account setup: PENDING EXTERNAL ACTION /
+NOT VERIFIED as described above.
+No commit and no deployment were made.
+================================================================================

@@ -9,6 +9,8 @@
 import { getEnv } from '../config/env';
 import { filmmaker, socialUrls } from '../data/filmmaker';
 import { timeline } from '../data/timeline';
+import { faq } from '../data/faq';
+import { gallery } from '../data/gallery';
 
 // ─── Site constants ──────────────────────────────────────────────────────────
 export const SITE = {
@@ -61,6 +63,8 @@ export interface RouteSeo {
   changefreq: 'daily' | 'weekly' | 'monthly' | 'yearly';
   priority: number;
   noindex?: boolean;
+  /** Images shown on the page, listed in sitemap.xml (image sitemap extension). */
+  images?: { loc: string; title?: string }[];
   breadcrumbs: Crumb[];
   /** Page-specific JSON-LD nodes (the global Person/WebSite/Organization graph is added separately). */
   schema: Record<string, unknown>[];
@@ -74,7 +78,7 @@ const ownerRef = { '@id': ID.person };
 
 const page = (
   path: string,
-  type: string,
+  type: string | string[],
   name: string,
   extra: Record<string, unknown> = {},
 ): Record<string, unknown> => ({
@@ -91,12 +95,24 @@ const timelineList = timeline.map((t) => ({
   text: `${t.period}: ${t.subtitle}${t.organisation ? `, ${t.organisation}` : ''}`,
 }));
 
+const faqNode = {
+  '@type': 'FAQPage',
+  '@id': `${abs('/about')}#faq`,
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  })),
+};
+
+const galleryImages = gallery.map((g) => ({ loc: abs(g.src), title: g.caption }));
+
 export const ROUTES: RouteSeo[] = [
   {
     path: '/',
     title: 'S Vijay Krishnan — CEO of Youpeak Tech & Film Producer',
     description:
-      'Official website of S Vijay Krishnan, CEO of Youpeak Tech and film producer. His journey from film co-producer and chairman to CEO, and his new movie launching in 2027.',
+      'Official website of S Vijay Krishnan, CEO of Youpeak Tech and film producer. His journey from film chairman to CEO, and his new movie in 2027.',
     heading: 'S Vijay Krishnan — CEO of Youpeak Tech & Film Producer',
     ogType: 'website',
     image: SITE.ogImage,
@@ -104,6 +120,7 @@ export const ROUTES: RouteSeo[] = [
     changefreq: 'weekly',
     priority: 1.0,
     breadcrumbs: [home],
+    images: [{ loc: abs(SITE.ogImage), title: SITE.ogImageAlt }],
     schema: [
       page('/', 'WebPage', 'S Vijay Krishnan — CEO of Youpeak Tech & Film Producer', {
         about: ownerRef,
@@ -127,16 +144,23 @@ export const ROUTES: RouteSeo[] = [
     changefreq: 'monthly',
     priority: 0.9,
     breadcrumbs: [home, { name: 'About', path: '/about' }],
-    schema: [page('/about', 'ProfilePage', 'About S Vijay Krishnan', { mainEntity: ownerRef, dateModified: SITE.lastModified })],
+    images: [{ loc: abs('/ceo/ceo-01.jpg'), title: 'S Vijay Krishnan, CEO of Youpeak Tech' }],
+    schema: [
+      page('/about', ['AboutPage', 'ProfilePage'], 'About S Vijay Krishnan', { mainEntity: ownerRef, dateModified: SITE.lastModified }),
+      faqNode,
+    ],
     body: {
       paragraphs: [filmmaker.bio],
-      list: [{ title: 'Career timeline', items: timelineList }],
+      list: [
+        { title: 'Career timeline', items: timelineList },
+        { title: 'Frequently asked questions', items: faq.map((f) => ({ text: `${f.question} ${f.answer}` })) },
+      ],
     },
   },
   {
     path: '/gallery',
-    title: 'Gallery — Photos of S Vijay Krishnan',
-    description: 'Photos of S Vijay Krishnan as CEO of Youpeak Tech, film chairman and producer.',
+    title: 'Photo Gallery — S Vijay Krishnan, CEO & Film Producer',
+    description: 'Photos of S Vijay Krishnan, CEO of Youpeak Tech, across his career as a film producer, chairman and chief executive.',
     heading: 'Photo Gallery',
     ogType: 'website',
     image: SITE.ogImage,
@@ -144,12 +168,23 @@ export const ROUTES: RouteSeo[] = [
     changefreq: 'monthly',
     priority: 0.6,
     breadcrumbs: [home, { name: 'Gallery', path: '/gallery' }],
-    schema: [page('/gallery', 'ImageGallery', 'Photo Gallery — S Vijay Krishnan', { about: ownerRef })],
+    images: galleryImages,
+    schema: [
+      page('/gallery', 'ImageGallery', 'Photo Gallery — S Vijay Krishnan', {
+        about: ownerRef,
+        image: gallery.map((g) => ({
+          '@type': 'ImageObject',
+          contentUrl: abs(g.src),
+          caption: g.caption,
+          creditText: SITE.name,
+        })),
+      }),
+    ],
     body: { paragraphs: ['Photographs of S Vijay Krishnan across his career as producer, chairman and CEO.'] },
   },
   {
     path: '/contact',
-    title: 'Contact S Vijay Krishnan',
+    title: 'Contact S Vijay Krishnan — CEO of Youpeak Tech',
     description:
       'Get in touch with S Vijay Krishnan, CEO of Youpeak Tech and film producer, for partnerships, press and enquiries.',
     heading: 'Contact S Vijay Krishnan',
@@ -159,9 +194,33 @@ export const ROUTES: RouteSeo[] = [
     changefreq: 'monthly',
     priority: 0.8,
     breadcrumbs: [home, { name: 'Contact', path: '/contact' }],
-    schema: [page('/contact', 'ContactPage', 'Contact S Vijay Krishnan', { about: ownerRef })],
+    schema: [
+      page('/contact', 'ContactPage', 'Contact S Vijay Krishnan', {
+        about: ownerRef,
+        mainEntity: { '@type': 'ContactPoint', contactType: 'general enquiries', email: filmmaker.email, telephone: filmmaker.phone, url: abs('/contact') },
+      }),
+    ],
     body: {
-      paragraphs: [`Based in ${filmmaker.location}.`, `Email: ${filmmaker.email}`],
+      paragraphs: [`Based in ${filmmaker.location}.`, `Email: ${filmmaker.email}`, `Phone: ${filmmaker.phone}`],
+    },
+  },
+  {
+    path: '/privacy',
+    title: 'Privacy Policy | S Vijay Krishnan',
+    description:
+      'How vijaykrishnan.in handles your information: the contact form, the AI chat assistant, analytics and browser storage.',
+    heading: 'Privacy Policy',
+    ogType: 'website',
+    image: SITE.ogImage,
+    imageAlt: SITE.ogImageAlt,
+    changefreq: 'yearly',
+    priority: 0.3,
+    breadcrumbs: [home, { name: 'Privacy Policy', path: '/privacy' }],
+    schema: [page('/privacy', 'WebPage', 'Privacy Policy — S Vijay Krishnan')],
+    body: {
+      paragraphs: [
+        'This website has no accounts. The contact form opens your own email app. If you use the AI chat assistant, your messages are sent to a third-party AI provider to generate a reply.',
+      ],
     },
   },
 ];
@@ -204,6 +263,7 @@ export const globalGraph = (): Record<string, unknown> => {
         url: abs('/'),
         description: filmmaker.bio,
         jobTitle: filmmaker.jobTitle,
+        image: { '@type': 'ImageObject', url: abs('/ceo/ceo-01.jpg'), width: 1000, height: 1094 },
         nationality: { '@type': 'Country', name: 'India' },
         homeLocation: {
           '@type': 'Place',
@@ -351,13 +411,14 @@ export const buildSitemap = (): string => {
       `    <lastmod>${SITE.lastModified}</lastmod>`,
       `    <changefreq>${r.changefreq}</changefreq>`,
       `    <priority>${r.priority.toFixed(1)}</priority>`,
+      ...(r.images ?? []).map((i) => `    <image:image><image:loc>${esc(i.loc)}</image:loc></image:image>`),
       '  </url>',
     ].join('\n'),
   );
 
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
-    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">',
     ...urls,
     '</urlset>',
     '',

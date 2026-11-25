@@ -1,9 +1,15 @@
-import { useEffect, useState, lazy, Suspense } from 'react';
+import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import Home from './pages/Home';
+import About from './pages/About';
+import Gallery from './pages/Gallery';
+import Contact from './pages/Contact';
+import Privacy from './pages/Privacy';
+import NotFound from './pages/NotFound';
 import Navbar from './components/navigation/Navbar';
 import Footer from './components/common/Footer';
 import CustomCursor from './components/ui/CustomCursor';
@@ -14,32 +20,33 @@ import PageTransition from './components/cinematic/PageTransition';
 import ChatAssistant from './components/chatbot/ChatAssistant';
 import { useSeo } from './seo/useSeo';
 import { shouldShowPreloader, markPreloaderShown } from './seo/preloaderPolicy';
+import { initAnalytics, trackPageView } from './analytics/analytics';
 
-// Route-based code splitting
-const Home = lazy(() => import('./pages/Home'));
-const About = lazy(() => import('./pages/About'));
-const Gallery = lazy(() => import('./pages/Gallery'));
-const Contact = lazy(() => import('./pages/Contact'));
-const Privacy = lazy(() => import('./pages/Privacy'));
-const NotFound = lazy(() => import('./pages/NotFound'));
+// Pages are bundled together (the whole site is ~40 KB of page code): no extra request when a visitor lands on a deep link.
 
 gsap.registerPlugin(ScrollTrigger);
-
-// Cinematic route loading indicator
-const RouteLoader = () => (
-  <div className="min-h-screen bg-cinemaBlack flex items-center justify-center">
-    <div className="flex flex-col items-center gap-4">
-      <div className="w-12 h-12 rounded-full border-2 border-gold/20 border-t-gold animate-spin" />
-      <span className="font-display text-xs tracking-widest text-silver uppercase">
-        Loading Scene...
-      </span>
-    </div>
-  </div>
-);
 
 function AppInner() {
   const location = useLocation();
   useSeo(location.pathname);
+
+  // Analytics (only active when VITE_GA4_ID or VITE_GTM_ID is set): start after first paint, then report each route.
+  useEffect(() => {
+    const idle = window as unknown as {
+      requestIdleCallback?: (cb: () => void) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    if (idle.requestIdleCallback) {
+      const id = idle.requestIdleCallback(initAnalytics);
+      return () => idle.cancelIdleCallback?.(id);
+    }
+    const timer = window.setTimeout(initAnalytics, 1500);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    trackPageView(location.pathname, document.title);
+  }, [location.pathname]);
 
   useEffect(() => {
     const lenis = (window as unknown as { __lenis?: { scrollTo: (target: number, opts?: { immediate?: boolean }) => void } }).__lenis;
@@ -52,10 +59,15 @@ function AppInner() {
 
   return (
     <>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10000] focus:bg-ivory focus:px-4 focus:py-2 focus:text-cinemaBlack"
+      >
+        Skip to content
+      </a>
       <ScrollProgress />
       <Navbar />
       <PageTransition>
-        <Suspense fallback={<RouteLoader />}>
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
@@ -64,7 +76,6 @@ function AppInner() {
             <Route path="/privacy" element={<Privacy />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Suspense>
       </PageTransition>
       <Footer />
       <ChatAssistant />
