@@ -1,0 +1,1 @@
+- [chatbot-css-alignment](chatbot-css-alignment.md) — Aligned base .cbx CSS custom properties in chatbot.css with crimson/gold/ivory theme from chatConfig.ts to fix the "black dent" chat widget appearance. All 8 base variables updated: --cbx-accent-2, --cbx-on-accent, --cbx-bg, --cbx-surface, --cbx-text, --cbx-muted, --cbx-border, --cbx-z.

@@ -4,25 +4,25 @@
    that chatConfig.js sets per site (see `theme`).
    ------------------------------------------------------------------ */
 .cbx {
-  --cbx-accent: #4f46e5;
-  --cbx-accent-2: #7c3aed;
-  --cbx-on-accent: #fff;
-  --cbx-bg: #fff;
-  --cbx-surface: #f4f5f9;
-  --cbx-text: #17181f;
-  --cbx-muted: #656a7a;
-  --cbx-border: rgba(20, 22, 40, 0.1);
+  --cbx-accent: #d91a3c;
+  --cbx-accent-2: #ad761e;
+  --cbx-on-accent: #ffffff;
+  --cbx-bg: #ffffff;
+  --cbx-surface: #f4f2eb;
+  --cbx-text: #141418;
+  --cbx-muted: #5c5b66;
+  --cbx-border: rgba(20, 20, 24, 0.12);
   --cbx-user-bg: var(--cbx-accent);
   --cbx-user-text: var(--cbx-on-accent);
   --cbx-bot-bg: var(--cbx-surface);
   --cbx-bot-text: var(--cbx-text);
   --cbx-link: var(--cbx-accent);
   /* optional: --cbx-head-bg, --cbx-head-text (header), --cbx-chip (suggestion-chip colour), --cbx-launcher-bg / --cbx-launcher-text (floating button) */
-  --cbx-shadow: 0 24px 60px -12px rgba(10, 12, 30, 0.35), 0 4px 14px rgba(10, 12, 30, 0.12);
+  --cbx-shadow: 0 20px 60px -15px rgba(20, 20, 24, 0.15), 0 8px 24px -8px rgba(0, 0, 0, 0.08);
   --cbx-font: inherit;
-  --cbx-right: 1rem;
-  --cbx-bottom: 1rem;
-  --cbx-z: 70;
+  --cbx-right: 1.25rem;
+  --cbx-bottom: 1.25rem;
+  --cbx-z: 160;
 
   position: fixed;
   right: calc(var(--cbx-right) + env(safe-area-inset-right, 0px));
